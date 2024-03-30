@@ -3,9 +3,7 @@
 	import { T, useTask } from '@threlte/core'
 
 	export let onClick: () => void
-
 	let ref: Mesh
-
 	useTask((dt) => {
 		ref.rotation.x += dt
 		ref.rotation.y += dt
