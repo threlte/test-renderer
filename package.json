@@ -22,7 +22,8 @@
 	},
 	"files": ["dist", "!dist/**/*.test.*", "!dist/**/*.spec.*"],
 	"peerDependencies": {
-		"svelte": "^4.0.0"
+		"svelte": ">=4",
+		"@threlte/core": ">=7"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.2.0",
@@ -31,7 +32,7 @@
 		"@sveltejs/vite-plugin-svelte": "^3.0.2",
 		"@threlte/core": "^7.2.1",
 		"@types/eslint": "^8.56.6",
-		"@types/three": "^0.162.0",
+		"@types/three": "^0.163.0",
 		"@typescript-eslint/eslint-plugin": "^7.4.0",
 		"@typescript-eslint/parser": "^7.4.0",
 		"eslint": "^8.57.0",
@@ -52,10 +53,7 @@
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"dependencies": {
-		"@react-three/test-renderer": "^8.2.1",
 		"@threlte/extras": "^8.11.1",
-		"jsdom": "^24.0.0",
-		"vitest-canvas-mock": "^0.3.3",
-		"vitest-webgl-canvas-mock": "^1.1.0"
+		"jsdom": "^24.0.0"
 	}
 }
