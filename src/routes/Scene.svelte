@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Mesh } from 'three'
 	import { T, useTask } from '@threlte/core'
+
 	export let onClick: () => void
 	let ref: Mesh
 	useTask((dt) => {
@@ -9,7 +10,11 @@
 	})
 </script>
 
-<T.PerspectiveCamera makeDefault></T.PerspectiveCamera>
+<T.PerspectiveCamera
+	makeDefault
+	position={[1, 1, 1]}
+	on:create={({ ref }) => ref.lookAt(0, 0, 0)}
+/>
 
 <T.DirectionalLight />
 <T.AmbientLight />
