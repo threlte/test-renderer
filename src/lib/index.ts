@@ -1,2 +1,2 @@
 // Reexport your entry components here
-export { render, fireEvent } from './render'
+export { render } from './render'
