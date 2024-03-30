@@ -20,6 +20,12 @@ describe('Scene', () => {
 		expect(mesh.geometry).toBeInstanceOf(BoxGeometry)
 	})
 
+	it('creates a default perspective camera at position [1, 1, 1]', () => {
+		const { camera } = render(Scene)
+
+		expect(camera.current.position.toArray()).toStrictEqual([1, 1, 1])
+	})
+
 	it('rotates the box mesh on the x and y axis by the frame delta on each frame', () => {
 		const { scene, advance } = render(Scene)
 

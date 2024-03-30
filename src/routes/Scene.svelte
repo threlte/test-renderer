@@ -12,7 +12,11 @@
 	})
 </script>
 
-<T.PerspectiveCamera makeDefault></T.PerspectiveCamera>
+<T.PerspectiveCamera
+	makeDefault
+	position={[1, 1, 1]}
+	on:create={({ ref }) => ref.lookAt(0, 0, 0)}
+/>
 
 <T.DirectionalLight />
 <T.AmbientLight />
