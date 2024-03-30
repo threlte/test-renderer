@@ -35,12 +35,20 @@
 		}
 	})
 
-	contexts.ctx.advance = () => {
+	interface AdvanceOptions {
+		count?: number
+		delta?: number
+	}
+
+	contexts.ctx.advance = (options: AdvanceOptions = {}) => {
 		contexts.getInternalCtx().dispose()
 
-		// @TODO(mp) Expose lastTime (marked private)? Allow more control over deltas in the run() call?
-		scheduler.lastTime = 0
-		scheduler.run(16)
+		for (let i = 0, c = options.count ?? 1; i < c; i += 1) {
+			// @TODO(mp) Expose lastTime (marked private)? Allow more control over deltas in the run() call?
+			// @ts-expect-error
+			scheduler.lastTime = 0
+			scheduler.run(options.delta ?? 16)
+		}
 
 		contexts.getInternalCtx().resetFrameInvalidation()
 	}
