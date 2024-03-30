@@ -8,11 +8,9 @@ import {
 	type ToneMapping,
 	type WebGLRenderer
 } from 'three'
-import type { Size, Scheduler, Stage, Task, DisposableObject } from '@threlte/core'
-// import type { Scheduler, Stage, Task } from '../frame-scheduling'
-// import type { DisposableThreeObject, Size } from '../types'
+import type { CurrentWritable, Size, Scheduler, Stage, Task, DisposableObject } from '@threlte/core'
 import { getDefaultCamera } from './defaultCamera'
-import { currentWritable, type CurrentWritable } from '@threlte/core'
+import { currentWritable } from '@threlte/core'
 
 /**
  * ### `ThrelteContext`

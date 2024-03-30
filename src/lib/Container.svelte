@@ -27,7 +27,9 @@
 
 	// @TODO: Expose Scheduler from @threlte/core to avoid copying it here.
 	const scheduler = new Scheduler()
+	// @ts-expect-error
 	contexts.getCtx().mainStage = scheduler.createStage(Symbol('threlte-main-stage'))
+	// @ts-expect-error
 	contexts.getCtx().renderStage = scheduler.createStage(Symbol('threlte-render-stage'), {
 		after: contexts.ctx.mainStage,
 		callback(_, runTasks) {

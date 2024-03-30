@@ -1,6 +1,5 @@
 import { PerspectiveCamera } from 'three'
-import type { ThrelteContext } from './contexts'
-import { watch } from '@threlte/core'
+import { watch, type ThrelteContext } from '@threlte/core'
 
 const defaultCamera = new PerspectiveCamera(75, 0, 0.1, 1000)
 defaultCamera.position.z = 5
