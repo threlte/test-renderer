@@ -1,17 +1,12 @@
 import { SvelteComponent, tick } from 'svelte'
 import Container from './Container.svelte'
 import type { ThrelteContext } from '@threlte/core'
-import type { DomEvent, IntersectionEvent } from '@threlte/extras'
+import type { IntersectionEvent } from '@threlte/extras'
 import type { Object3D } from 'three'
 
-const containerCache = new Set()
-const componentCache = new Set()
+const componentCache = new Set<SvelteComponent>()
 
-export const render = (
-	Component: typeof SvelteComponent,
-	{ ...options } = {},
-	{ container, queries } = {}
-) => {
+export const render = (Component: typeof SvelteComponent, { ...options } = {}) => {
 	const component = new Container({
 		target: document.body,
 		props: {
@@ -20,7 +15,6 @@ export const render = (
 		}
 	})
 
-	containerCache.add({ container, component })
 	componentCache.add(component)
 
 	component.$$.on_destroy.push(() => {
@@ -30,7 +24,7 @@ export const render = (
 	const threlteContext = component.$$.context.get('threlte') as ThrelteContext
 
 	// @TODO(mp): Better way to grab interactivity / dispatcher context
-	const interactivityContext = [...component.$$.context.values()].find((ctx) => ctx.pointer)
+	// const interactivityContext = [...component.$$.context.values()].find((ctx) => ctx.pointer)
 	const dispatcherContext = [...component.$$.context.values()].find((ctx) => ctx.dispatchers)
 
 	return {
@@ -44,40 +38,27 @@ export const render = (
 			payload?: IntersectionEvent<typeof event>
 		) => {
 			const eventDispatcher = dispatcherContext.dispatchers.get(object3D)
-			console.log(eventDispatcher)
 			eventDispatcher(event, payload)
 			await tick()
 		},
-		rerender: async (props) => {
-			if (props.props) {
-				console.warn('rerender({ props: {...} }) deprecated, use rerender({...}) instead')
-				props = props.props
-			}
+		rerender: async (props: Partial<{ component: typeof SvelteComponent }>) => {
 			component.$set(props)
 			await tick()
 		},
 		unmount: () => {
 			if (componentCache.has(component)) {
+				componentCache.delete(component)
 				component.$destroy()
 			}
 		}
 	}
 }
 
-const cleanupAtContainer = (cached) => {
-	const { target, component } = cached
-
-	if (componentCache.has(component)) component.$destroy()
-
-	if (target.parentNode === document.body) {
-		document.body.removeChild(target)
-	}
-
-	containerCache.delete(cached)
-}
-
 export const cleanup = () => {
-	Array.from(containerCache.keys()).forEach(cleanupAtContainer)
+	for (const component of componentCache) {
+		component.$destroy()
+		componentCache.delete(component)
+	}
 }
 
 export const act = async (fn: () => Promise<unknown>) => {

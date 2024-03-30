@@ -1,2 +1,1 @@
-// Reexport your entry components here
-export { render } from './render'
+export { render, cleanup, act } from './render'

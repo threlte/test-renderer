@@ -21,7 +21,9 @@
 		useLegacyLights: false
 	})
 
-	contexts.getCtx().renderer = { domElement: document.createElement('canvas') } as WebGLRenderer
+	contexts.getCtx().renderer = {
+		domElement: document.createElement('canvas')
+	} as WebGLRenderer
 
 	// @TODO: Expose Scheduler from @threlte/core to avoid copying it here.
 	const scheduler = new Scheduler()
