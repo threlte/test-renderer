@@ -1,3 +1,5 @@
+<svelte:options accessors />
+
 <script lang="ts">
 	import { ACESFilmicToneMapping, type WebGLRenderer } from 'three'
 	import type { SvelteComponent } from 'svelte'
@@ -8,6 +10,7 @@
 
 	export let canvas: HTMLCanvasElement = document.createElement('canvas')
 	export let component: typeof SvelteComponent
+	export let ref: SvelteComponent | undefined = undefined
 
 	const context = createThrelteContext({
 		colorSpace: 'srgb',
@@ -32,5 +35,5 @@
 </script>
 
 <SceneGraphObject object={context.scene}>
-	<svelte:component this={component} {...$$restProps} />
+	<svelte:component this={component} bind:this={ref} {...$$restProps} />
 </SceneGraphObject>

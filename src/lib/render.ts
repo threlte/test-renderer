@@ -24,9 +24,10 @@ export const render = (Component: typeof SvelteComponent, { ...options } = {}) =
 	const dispatcherContext = [...component.$$.context.values()].find((ctx) => ctx.dispatchers)
 
 	return {
-		component,
+		component: component.ref,
 		scene: threlteContext.scene,
 		camera: threlteContext.camera,
+		context: threlteContext,
 		advance: threlteContext.advance,
 		fireEvent: async (
 			object3D: Object3D,
