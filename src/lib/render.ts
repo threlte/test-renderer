@@ -17,10 +17,6 @@ export const render = (Component: typeof SvelteComponent, { ...options } = {}) =
 
 	componentCache.add(component)
 
-	component.$$.on_destroy.push(() => {
-		componentCache.delete(component)
-	})
-
 	const threlteContext = component.$$.context.get('threlte') as ThrelteContext
 
 	// @TODO(mp): Better way to grab interactivity / dispatcher context
