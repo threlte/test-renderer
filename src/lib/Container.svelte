@@ -6,9 +6,9 @@
 	import { writable } from 'svelte/store'
 	import { SceneGraphObject, createThrelteContext } from '@threlte/core'
 	import { interactivity } from '@threlte/extras'
-	import { mockAdvance } from './advance'
+	import { mockAdvanceFn } from './advance'
 
-	export let canvas: HTMLCanvasElement = document.createElement('canvas')
+	export let canvas: HTMLCanvasElement
 	export let component: typeof SvelteComponent
 	export let ref: SvelteComponent | undefined = undefined
 
@@ -27,7 +27,7 @@
 
 	context.renderer = { domElement: canvas } as WebGLRenderer
 
-	mockAdvance(context)
+	mockAdvanceFn(context)
 
 	interactivity({
 		compute: () => undefined

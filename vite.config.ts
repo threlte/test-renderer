@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => ({
 	},
 	test: {
 		environment: 'jsdom',
+		setupFiles: ['./src/lib/vitest.js'],
 		mockReset: true,
 		unstubGlobals: true,
 		coverage: {
