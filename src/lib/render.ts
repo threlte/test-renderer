@@ -5,30 +5,61 @@ import type { IntersectionEvent } from '@threlte/extras'
 import type { Object3D } from 'three'
 
 const componentCache = new Set<SvelteComponent>()
+const targetCache = new Set<HTMLElement>()
+
+// @TODO export this from @threlte/extras
+export type ThrelteEvents =
+	| 'click'
+	| 'contextmenu'
+	| 'dblclick'
+	| 'wheel'
+	| 'pointerup'
+	| 'pointerdown'
+	| 'pointerover'
+	| 'pointerout'
+	| 'pointerenter'
+	| 'pointerleave'
+	| 'pointermove'
+	| 'pointermissed'
 
 export const render = (
 	Component: typeof SvelteComponent,
-	{ target, ...options }: { target?: HTMLElement } & Record<string, unknown> = {},
-	{ container = document.body, canvas = document.createElement('canvas') } = {}
+	componentOptions: {
+		target?: HTMLElement
+	} & Record<string, unknown> = {},
+	renderOptions: {
+		baseElement?: HTMLElement
+		canvas?: HTMLCanvasElement
+		userSize?: { width: number; height: number }
+	} = {}
 ) => {
+	const { userSize, canvas = document.createElement('canvas') } = renderOptions
+
+	const baseElement = renderOptions.baseElement ?? componentOptions.target ?? document.body
+	const target = componentOptions.target ?? baseElement.appendChild(document.createElement('div'))
+
 	const component = new Container({
-		target: (target = target ?? container.appendChild(document.createElement('div'))),
+		target,
 		props: {
 			canvas,
 			component: Component,
-			...options
+			userSize,
+			...componentOptions
 		}
 	})
 
+	targetCache.add(target)
 	componentCache.add(component)
 
+	/**
+	 * @TODO(mp): Try to generate contexts here and pass it into the component in Svelte 5 version.
+	 * Cannot do in v4 due to `get_current_component()`.
+	 */
 	const threlteContext = component.$$.context.get('threlte') as ThrelteContext
-
-	// @TODO(mp): Better way to grab interactivity / dispatcher context
-	// const interactivityContext = [...component.$$.context.values()].find((ctx) => ctx.pointer)
 	const dispatcherContext = [...component.$$.context.values()].find((ctx) => ctx.dispatchers)
 
 	return {
+		baseElement,
 		component: component.ref,
 		scene: threlteContext.scene,
 		camera: threlteContext.camera,
@@ -59,8 +90,15 @@ export const render = (
 export const cleanup = () => {
 	for (const component of componentCache) {
 		component.$destroy()
-		componentCache.delete(component)
 	}
+	componentCache.clear()
+
+	for (const target of targetCache) {
+		if (target.parentNode === document.body) {
+			target.remove()
+		}
+	}
+	targetCache.clear()
 }
 
 export const act = async (fn?: () => Promise<unknown>) => {
@@ -68,32 +106,4 @@ export const act = async (fn?: () => Promise<unknown>) => {
 		await fn()
 	}
 	return tick()
-}
-
-// @TODO export this from @threlte/extras
-export type ThrelteEvents = {
-	click: IntersectionEvent<MouseEvent>
-	contextmenu: IntersectionEvent<MouseEvent>
-	dblclick: IntersectionEvent<MouseEvent>
-	wheel: IntersectionEvent<WheelEvent>
-	pointerup: IntersectionEvent<PointerEvent>
-	pointerdown: IntersectionEvent<PointerEvent>
-	pointerover: IntersectionEvent<PointerEvent>
-	pointerout: IntersectionEvent<PointerEvent>
-	pointerenter: IntersectionEvent<PointerEvent>
-	pointerleave: IntersectionEvent<PointerEvent>
-	pointermove: IntersectionEvent<PointerEvent>
-	pointermissed: MouseEvent
-}
-
-// If we're running in a test runner that supports afterEach
-// then we'll automatically run cleanup afterEach test
-// this ensures that tests run in isolation from each other
-// if you don't like this then either import the `pure` module
-// or set the STL_SKIP_AUTO_CLEANUP env variable to 'true'.
-if (typeof afterEach === 'function' && !process.env.STL_SKIP_AUTO_CLEANUP) {
-	afterEach(async () => {
-		await act()
-		cleanup()
-	})
 }

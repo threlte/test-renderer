@@ -11,12 +11,13 @@
 	export let canvas: HTMLCanvasElement
 	export let component: typeof SvelteComponent
 	export let ref: SvelteComponent | undefined = undefined
+	export let userSize = { width: 1280, height: 720 }
 
 	const context = createThrelteContext({
 		colorSpace: 'srgb',
 		toneMapping: ACESFilmicToneMapping,
 		dpr: 1,
-		userSize: writable({ width: 1280, height: 720 }),
+		userSize: writable(userSize),
 		parentSize: writable(),
 		renderMode: 'manual',
 		autoRender: true,
