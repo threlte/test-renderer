@@ -1,16 +1,34 @@
 <svelte:options accessors />
 
-<script lang="ts">
-	import { ACESFilmicToneMapping, type WebGLRenderer } from 'three'
-	import type { SvelteComponent } from 'svelte'
+<script>
+	import { ACESFilmicToneMapping } from 'three'
+	import { SvelteComponent } from 'svelte'
 	import { writable } from 'svelte/store'
 	import { SceneGraphObject, createThrelteContext } from '@threlte/core'
 	import { interactivity } from '@threlte/extras'
 	import { mockAdvanceFn } from './advance'
 
-	export let canvas: HTMLCanvasElement
-	export let component: typeof SvelteComponent
-	export let ref: SvelteComponent | undefined = undefined
+	/**
+	 * @type {HTMLCanvasElement}
+	 */
+	export let canvas
+
+	/**
+	 * @type {typeof SvelteComponent}
+	 */
+	export let component
+
+	/**
+	 * @type {SvelteComponent | undefined}
+	 */
+	export let ref = undefined
+
+	/**
+	 * @type {{
+	 *   width: number,
+	 *   height: number
+	 * }}
+	 */
 	export let userSize = { width: 1280, height: 720 }
 
 	const context = createThrelteContext({
@@ -26,7 +44,9 @@
 		useLegacyLights: false
 	})
 
-	context.renderer = { domElement: canvas } as WebGLRenderer
+	const rendererMock = { domElement: canvas }
+	/** @ts-expect-error We aren't interested in providing a full mock. */
+	context.renderer = rendererMock
 
 	mockAdvanceFn(context)
 

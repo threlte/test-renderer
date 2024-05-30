@@ -73,6 +73,10 @@ expect(onClick).toHaveBeenCalledOnce()
 
 Note that if you use the event object, you will have to design a mock payload.
 
+#### Cleanup
+
+In a vitest environment, cleanup after each test is automatically handled.
+
 #### Limitations
 
 The test renderer runs in a node.js environment, and it does not attempt to mock a webgl canvas, which can become quite complicated. Instead, it creates a Threlte context and renders your component as a child of a Threlte `<SceneGraphObject>`. This means that testing `<Canvas>` or `WebGLRenderer` related configuration and behavior won't work.

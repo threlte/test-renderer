@@ -1,38 +1,30 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SvelteComponent, tick } from 'svelte'
 import Container from './Container.svelte'
-import type { ThrelteContext } from '@threlte/core'
-import type { IntersectionEvent } from '@threlte/extras'
-import type { Object3D } from 'three'
 
-const componentCache = new Set<SvelteComponent>()
-const targetCache = new Set<HTMLElement>()
+/**
+ * @type {Set<SvelteComponent>}
+ */
+const componentCache = new Set()
 
-// @TODO export this from @threlte/extras
-export type ThrelteEvents =
-	| 'click'
-	| 'contextmenu'
-	| 'dblclick'
-	| 'wheel'
-	| 'pointerup'
-	| 'pointerdown'
-	| 'pointerover'
-	| 'pointerout'
-	| 'pointerenter'
-	| 'pointerleave'
-	| 'pointermove'
-	| 'pointermissed'
+/**
+ * @type {Set<HTMLElement>}
+ */
+const targetCache = new Set()
 
-export const render = (
-	Component: typeof SvelteComponent,
-	componentOptions: {
-		target?: HTMLElement
-	} & Record<string, unknown> = {},
-	renderOptions: {
-		baseElement?: HTMLElement
-		canvas?: HTMLCanvasElement
-		userSize?: { width: number; height: number }
-	} = {}
-) => {
+/**
+ * @TODO export this from @threlte/extras
+ * @typedef {'click' | 'contextmenu' | 'dblclick' | 'wheel' | 'pointerup' | 'pointerdown' | 'pointerover' | 'pointerout' | 'pointerenter' | 'pointerleave' | 'pointermove' | 'pointermissed'} ThrelteEvents
+ */
+
+/**
+ *
+ * @param {typeof SvelteComponent} Component
+ * @param {{ target?: HTMLElement } & Record<string, unknown>} componentOptions
+ * @param {{ baseElement?: HTMLElement, canvas?: HTMLCanvasElement, userSize?: { width: number; height: number }}} renderOptions
+ * @returns
+ */
+export const render = (Component, componentOptions = {}, renderOptions = {}) => {
 	const { userSize, canvas = document.createElement('canvas') } = renderOptions
 
 	const baseElement = renderOptions.baseElement ?? componentOptions.target ?? document.body
@@ -54,8 +46,9 @@ export const render = (
 	/**
 	 * @TODO(mp): Try to generate contexts here and pass it into the component in Svelte 5 version.
 	 * Cannot do in v4 due to `get_current_component()`.
+	 * @type {import('@threlte/core').ThrelteContext}
 	 */
-	const threlteContext = component.$$.context.get('threlte') as ThrelteContext
+	const threlteContext = component.$$.context.get('threlte')
 	const dispatcherContext = [...component.$$.context.values()].find((ctx) => ctx.dispatchers)
 
 	return {
@@ -65,19 +58,28 @@ export const render = (
 		camera: threlteContext.camera,
 		context: threlteContext,
 		advance: threlteContext.advance,
-		fireEvent: async (
-			object3D: Object3D,
-			event: keyof ThrelteEvents,
-			payload?: IntersectionEvent<typeof event>
-		) => {
+
+		/**
+		 *
+		 * @param {import('three').Object3D} object3D
+		 * @param {ThrelteEvents} event
+		 * @param {import('@threlte/extras').IntersectionEvent<ThrelteEvents>=} payload
+		 */
+		fireEvent: async (object3D, event, payload) => {
 			const eventDispatcher = dispatcherContext.dispatchers.get(object3D)
 			eventDispatcher(event, payload)
 			await tick()
 		},
-		rerender: async (props: Partial<{ component: typeof SvelteComponent }>) => {
+
+		/**
+		 *
+		 * @param {Partial<{ component: typeof SvelteComponent }>} props
+		 */
+		rerender: async (props) => {
 			component.$set(props)
 			await tick()
 		},
+
 		unmount: () => {
 			if (componentCache.has(component)) {
 				componentCache.delete(component)
@@ -101,7 +103,12 @@ export const cleanup = () => {
 	targetCache.clear()
 }
 
-export const act = async (fn?: () => Promise<unknown>) => {
+/**
+ *
+ * @param {() => Promise<unknown>=} fn
+ * @returns {Promise<void>}
+ */
+export const act = async (fn) => {
 	if (fn) {
 		await fn()
 	}

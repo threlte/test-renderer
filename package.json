@@ -16,44 +16,48 @@
 	},
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"svelte": "./dist/index.js"
+			"types": "./src/lib/index.js",
+			"import": "./src/lib/index.js"
 		}
 	},
-	"files": ["dist", "!dist/**/*.test.*", "!dist/**/*.spec.*"],
+	"files": [
+		"dist",
+		"!dist/**/*.test.*",
+		"!dist/**/*.spec.*"
+	],
 	"peerDependencies": {
 		"svelte": ">=4",
 		"@threlte/core": ">=7"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^3.2.0",
-		"@sveltejs/kit": "^2.5.5",
+		"@sveltejs/adapter-auto": "^3.2.1",
+		"@sveltejs/kit": "^2.5.10",
 		"@sveltejs/package": "^2.3.1",
-		"@sveltejs/vite-plugin-svelte": "^3.0.2",
+		"@sveltejs/vite-plugin-svelte": "^3.1.1",
 		"@threlte/core": "^7.3.0",
-		"@types/eslint": "^8.56.7",
-		"@types/three": "^0.163.0",
-		"@typescript-eslint/eslint-plugin": "^7.6.0",
-		"@typescript-eslint/parser": "^7.6.0",
-		"eslint": "^9.0.0",
+		"@types/eslint": "^8.56.10",
+		"@types/three": "^0.164.1",
+		"@typescript-eslint/eslint-plugin": "^7.11.0",
+		"@typescript-eslint/parser": "^7.11.0",
+		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
-		"eslint-plugin-svelte": "^2.36.0",
+		"eslint-plugin-svelte": "^2.39.0",
 		"prettier": "^3.2.5",
-		"prettier-plugin-svelte": "^3.2.2",
-		"publint": "^0.2.7",
-		"svelte": "^4.2.12",
-		"svelte-check": "^3.6.9",
-		"three": "^0.163.0",
+		"prettier-plugin-svelte": "^3.2.3",
+		"publint": "^0.2.8",
+		"svelte": "^4.2.17",
+		"svelte-check": "^3.8.0",
+		"three": "^0.164.1",
 		"tslib": "^2.6.2",
-		"typescript": "^5.4.4",
-		"vite": "^5.2.8",
-		"vitest": "^1.4.0"
+		"typescript": "^5.4.5",
+		"vite": "^5.2.12",
+		"vitest": "^1.6.0"
 	},
 	"svelte": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"dependencies": {
 		"@threlte/extras": "^8.11.2",
-		"jsdom": "^24.0.0"
+		"jsdom": "^24.1.0"
 	}
 }
