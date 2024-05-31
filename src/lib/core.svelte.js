@@ -30,7 +30,7 @@ const ModernCore = {
 	 * Mount the component into the DOM.
 	 *
 	 * @param {Function} ComponentConstructor
-	 * @param {*} componentOptions
+	 * @param {Svelte.ComponentConstructorOptions} componentOptions
 	 * @returns {Svelte.SvelteComponent}
 	 */
 	renderComponent: (ComponentConstructor, componentOptions) => {

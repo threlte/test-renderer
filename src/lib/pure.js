@@ -96,7 +96,7 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 			...componentOptions,
 			props: {
 				...(isObject(componentOptions.props) ? componentOptions.props : {}),
-				canvas: renderOptions.canvas,
+				canvas: renderOptions.canvas ?? document.createElement('canvas'),
 				component: ComponentConstructor,
 				userSize: renderOptions.userSize
 			},
@@ -108,11 +108,13 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 	componentCache.add(component)
 
 	/**
-	 * @TODO(mp): Try to generate contexts here and pass it into the component in Svelte 5 version.
-	 * Cannot do in v4 due to `get_current_component()`.
+	 * @TODO(mp): Provide the context to the new Component call rather than pulling it out of the component.
+	 * Can be done when Svelte 4 support is dropped.
+	 *
 	 * @type {Threlte.ThrelteContext}
 	 */
 	const threlteContext = component.$$.context.get('threlte')
+
 	const dispatcherContext = [...component.$$.context.values()].find((ctx) => ctx.dispatchers)
 
 	return {
@@ -182,7 +184,7 @@ export const cleanup = () => {
 
 /**
  *
- * @param {() => Promise<void>} fn
+ * @param {(() => Promise<void>) | (() => void)} fn
  * @returns {Promise<void>}
  */
 export const act = async (fn) => {

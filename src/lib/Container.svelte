@@ -50,8 +50,6 @@
 
 	mockAdvanceFn(context)
 
-	console.log('hi')
-
 	interactivity({
 		compute: () => undefined
 	})
