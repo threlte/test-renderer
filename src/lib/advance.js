@@ -31,9 +31,9 @@ export const mockAdvanceFn = (context) => {
 	context.advance = (options = {}) => {
 		internalContext.dispose()
 
-		for (let i = 0, c = options.count ?? 1; i < c; i += 1) {
-			// @ts-expect-error @TODO(mp) Expose lastTime (marked private)?
-			// Allow more control over deltas in the run() call?
+		const count = options.count ?? 1
+		for (let index = 0; index < count; index += 1) {
+			// @ts-expect-error @TODO(mp) Expose lastTime (marked private)? Allow more control over deltas in the run() call?
 			context.scheduler.lastTime = 0
 			context.scheduler.run(options.delta ?? 16)
 		}

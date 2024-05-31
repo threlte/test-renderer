@@ -1,7 +1,8 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render } from '../../lib'
+import { BoxGeometry, type Mesh, MeshStandardMaterial } from 'three'
+import { describe, expect, it, vi } from 'vitest'
+
 import Scene from '../Scene.svelte'
-import { BoxGeometry, MeshStandardMaterial, type Mesh } from 'three'
+import { render } from '../../lib'
 
 describe('Scene', () => {
 	it('creates an ambient and directional light', () => {

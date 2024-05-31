@@ -8,27 +8,16 @@
 	import { interactivity } from '@threlte/extras'
 	import { mockAdvanceFn } from './advance'
 
-	/**
-	 * @type {HTMLCanvasElement}
-	 */
+	/** @type {HTMLCanvasElement} */
 	export let canvas
 
-	/**
-	 * @type {typeof SvelteComponent}
-	 */
+	/** @type {typeof SvelteComponent} */
 	export let component
 
-	/**
-	 * @type {SvelteComponent | undefined}
-	 */
+	/** @type {SvelteComponent | undefined} */
 	export let ref = undefined
 
-	/**
-	 * @type {{
-	 *   width: number,
-	 *   height: number
-	 * }}
-	 */
+	/** @type {{ width: number, height: number }} */
 	export let userSize = { width: 1280, height: 720 }
 
 	const context = createThrelteContext({
@@ -41,7 +30,7 @@
 		autoRender: true,
 		shadows: true,
 		colorManagementEnabled: true,
-		useLegacyLights: false
+		useLegacyLights: false,
 	})
 
 	const rendererMock = { domElement: canvas }
@@ -51,7 +40,7 @@
 	mockAdvanceFn(context)
 
 	interactivity({
-		compute: () => undefined
+		compute: () => undefined,
 	})
 </script>
 

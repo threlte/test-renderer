@@ -4,10 +4,10 @@ import * as THREE from 'three'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as Threlte from '@threlte/core'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as Extras from '@threlte/extras'
+import * as ThrelteExtras from '@threlte/extras'
 
-import { Core } from './core.svelte.js'
 import Container from './Container.svelte'
+import { Core } from './core.svelte.js'
 
 /**
  *
@@ -18,14 +18,13 @@ const isObject = (maybeObj) => {
 	return typeof maybeObj === 'object' && maybeObj !== null
 }
 
-/**
- * @type {Set<HTMLElement>}
- */
+/** @type {Set<HTMLElement>} */
 const targetCache = new Set()
 
-/**
- * @type {Set<Svelte.SvelteComponent>}
- */
+/** @type {Set<HTMLCanvasElement>} */
+const canvasCache = new Set()
+
+/** @type {Set<Svelte.SvelteComponent>} */
 const componentCache = new Set()
 
 /**
@@ -36,15 +35,19 @@ const componentCache = new Set()
 /**
  *
  * @param {Record<string, unknown>} options
- * @returns {Record<string, unknown>}
+ * @returns {Record<string, unknown> & { target?: HTMLElement }}
  */
 const checkProps = (options) => {
 	const keys = Object.keys(options)
-	const isProps = !keys.some((option) => Core.componentOptions.includes(option))
+	const isProps = !keys.some((option) => {
+		return Core.componentOptions.includes(option)
+	})
 
 	// Check if any props and Svelte options were accidentally mixed.
 	if (!isProps) {
-		const unrecognizedOptions = keys.filter((option) => !Core.componentOptions.includes(option))
+		const unrecognizedOptions = keys.filter((option) => {
+			return !Core.componentOptions.includes(option)
+		})
 
 		if (unrecognizedOptions.length > 0) {
 			throw Error(`
@@ -64,6 +67,18 @@ const checkProps = (options) => {
 
 /**
  *
+ * @param {Svelte.SvelteComponent<any, any, any>} component
+ */
+const cleanupComponent = (component) => {
+	const inCache = componentCache.delete(component)
+
+	if (inCache) {
+		Core.cleanupComponent(component)
+	}
+}
+
+/**
+ *
  * @param {typeof Svelte.SvelteComponent<any, any, any>} Component
  * @param {{
  *   target?: HTMLElement
@@ -76,13 +91,18 @@ const checkProps = (options) => {
  * @returns
  */
 export const render = (Component, componentOptions = {}, renderOptions = {}) => {
-	componentOptions = checkProps(componentOptions)
+	const checkedOptions = checkProps(componentOptions)
 
-	const baseElement = renderOptions.baseElement ?? componentOptions.target ?? document.body
+	/** @type {HTMLElement} */
+	const baseElement = renderOptions.baseElement ?? checkedOptions.target ?? document.body
 
-	const target = componentOptions.target ?? baseElement.appendChild(document.createElement('div'))
-
+	/** @type {HTMLElement} */
+	const target = checkedOptions.target ?? baseElement.appendChild(document.createElement('div'))
 	targetCache.add(target)
+
+	/** @type {HTMLCanvasElement} */
+	const canvas = renderOptions.canvas ?? document.createElement('canvas')
+	canvasCache.add(canvas)
 
 	/** @type {any} */
 	const ComponentConstructor = 'default' in Component ? Component.default : Component
@@ -93,14 +113,14 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 	const component = Core.renderComponent(
 		anyContainer,
 		{
-			...componentOptions,
+			...checkedOptions,
 			props: {
-				...(isObject(componentOptions.props) ? componentOptions.props : {}),
-				canvas: renderOptions.canvas ?? document.createElement('canvas'),
+				...(isObject(checkedOptions.props) ? checkedOptions.props : {}),
+				canvas,
 				component: ComponentConstructor,
-				userSize: renderOptions.userSize
+				userSize: renderOptions.userSize,
 			},
-			target
+			target,
 		},
 		cleanupComponent
 	)
@@ -115,22 +135,25 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 	 */
 	const threlteContext = component.$$.context.get('threlte')
 
-	const dispatcherContext = [...component.$$.context.values()].find((ctx) => ctx.dispatchers)
+	const dispatcherContext = [...component.$$.context.values()].find((ctx) => {
+		return ctx.dispatchers || ctx.handlers
+	})
 
 	return {
 		baseElement,
-		component: component.ref,
-		scene: threlteContext.scene,
 		camera: threlteContext.camera,
-		context: threlteContext,
-		advance: threlteContext.advance,
+		component: component.ref,
 		container: target,
+		context: threlteContext,
+		scene: threlteContext.scene,
+
+		advance: threlteContext.advance,
 
 		/**
 		 *
 		 * @param {THREE.Object3D} object3D
 		 * @param {ThrelteEvents} event
-		 * @param {Extras.IntersectionEvent<ThrelteEvents>=} payload
+		 * @param {ThrelteExtras.IntersectionEvent<ThrelteEvents>=} payload
 		 */
 		fireEvent: async (object3D, event, payload) => {
 			const eventDispatcher = dispatcherContext.dispatchers.get(object3D)
@@ -149,19 +172,7 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 
 		unmount: () => {
 			cleanupComponent(component)
-		}
-	}
-}
-
-/**
- *
- * @param {Svelte.SvelteComponent<any, any, any>} component
- */
-const cleanupComponent = (component) => {
-	const inCache = componentCache.delete(component)
-
-	if (inCache) {
-		Core.cleanupComponent(component)
+		},
 	}
 }
 

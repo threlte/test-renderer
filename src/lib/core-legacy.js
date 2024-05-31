@@ -15,10 +15,6 @@ export const LegacyCore = {
 	componentOptions: ['target', 'accessors', 'anchor', 'props', 'hydrate', 'intro', 'context'],
 
 	/**
-
-	 */
-
-	/**
 	 * Mount the component into the DOM.
 	 *
 	 * The `onDestroy` callback is included for strict backwards compatibility
@@ -56,5 +52,5 @@ export const LegacyCore = {
 	 */
 	cleanupComponent: (component) => {
 		component.$destroy()
-	}
+	},
 }

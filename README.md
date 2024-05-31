@@ -1,4 +1,4 @@
-### Threlte test renderer
+## Threlte test renderer
 
 The `@threlte/test` is a lightweight component testing toolkit for Threlte components.
 
@@ -35,11 +35,11 @@ const {
 } = render(Component)
 ```
 
-#### Scene
+### Scene
 
 `scene` is the `THREE.Scene` created by a Threlte context without any modifications. Querying objects from it can be useful for verifying that your component is doing what you expect it to.
 
-#### Advance
+### Advance
 
 In the test renderer environment, Threlte's render mode is set to `manual`. `advance` is very similar to the function of the same name returned by the `useThrelte` hook, but it advances at a fixed rate (16ms) regardless of environment. The number of times called and delta can also be configured when calling it.
 
@@ -48,7 +48,7 @@ In the test renderer environment, Threlte's render mode is set to `manual`. `adv
 advance({ delta: 33.3, count: 10 })
 ```
 
-#### fireEvent
+### fireEvent
 
 If your component uses the `interactivity` plugin, you can test events using the `fireEvent` function. Let's say we have a component like this:
 
@@ -73,11 +73,11 @@ expect(onClick).toHaveBeenCalledOnce()
 
 Note that if you use the event object, you will have to design a mock payload.
 
-#### Cleanup
+### Cleanup
 
 In a vitest environment, cleanup after each test is automatically handled.
 
-#### Limitations
+### Limitations
 
 The test renderer runs in a node.js environment, and it does not attempt to mock a webgl canvas, which can become quite complicated. Instead, it creates a Threlte context and renders your component as a child of a Threlte `<SceneGraphObject>`. This means that testing `<Canvas>` or `WebGLRenderer` related configuration and behavior won't work.
 
