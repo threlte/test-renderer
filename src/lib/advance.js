@@ -20,12 +20,11 @@ import { getContext } from 'svelte'
  * @returns {undefined}
  */
 export const mockAdvanceFn = (context) => {
-	/**
-	 * @type InternalCtx
-	 */
+	/** @type InternalCtx */
 	const internalContext = getContext('threlte-internal-context')
 
 	/**
+	 *
 	 * @param {AdvanceOptions} options
 	 */
 	context.advance = (options = {}) => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-interface */
 /*
  * See https://kit.svelte.dev/docs/types#app
  * for information about these interfaces

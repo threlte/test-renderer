@@ -29,15 +29,15 @@ const ModernCore = {
 	/**
 	 * Mount the component into the DOM.
 	 *
-	 * @param {Function} ComponentConstructor
+	 * @param {Svelte.SvelteComponent} ComponentConstructor
 	 * @param {Svelte.ComponentConstructorOptions} componentOptions
-	 * @returns {Svelte.SvelteComponent}
+	 * @returns {ReturnType<Svelte.mount>}
 	 */
 	renderComponent: (ComponentConstructor, componentOptions) => {
 		const props = $state(componentOptions.props ?? {})
 		const component = Svelte.mount(ComponentConstructor, {
 			...componentOptions,
-			props
+			props,
 		})
 
 		propsByComponent.set(component, props)
@@ -71,7 +71,7 @@ const ModernCore = {
 	cleanupComponent: (component) => {
 		propsByComponent.delete(component)
 		Svelte.unmount(component)
-	}
+	},
 }
 
 export const Core = IS_MODERN_SVELTE ? ModernCore : LegacyCore

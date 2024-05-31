@@ -7,18 +7,22 @@ module.exports = {
 		es2017: true,
 		node: true,
 	},
+
 	extends: [
 		'eslint:all',
-		'plugin:@typescript-eslint/recommended',
+		'plugin:@typescript-eslint/strict',
+		'plugin:@typescript-eslint/stylistic',
 		'plugin:svelte/recommended',
 		'prettier',
 	],
+
 	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		ecmaVersion: 2020,
 		extraFileExtensions: ['.svelte'],
 		sourceType: 'module',
 	},
+
 	plugins: ['@typescript-eslint'],
 
 	overrides: [
@@ -30,6 +34,7 @@ module.exports = {
 			},
 		},
 	],
+
 	rules: {
 		'arrow-body-style': ['error', 'always'],
 		'max-lines-per-function': ['error', 200],

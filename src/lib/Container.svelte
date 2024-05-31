@@ -2,7 +2,7 @@
 
 <script>
 	import { ACESFilmicToneMapping } from 'three'
-	import { SvelteComponent } from 'svelte'
+	import { SvelteComponent, getContext } from 'svelte'
 	import { writable } from 'svelte/store'
 	import { SceneGraphObject, createThrelteContext } from '@threlte/core'
 	import { interactivity } from '@threlte/extras'
@@ -20,7 +20,7 @@
 	/** @type {{ width: number, height: number }} */
 	export let userSize = { width: 1280, height: 720 }
 
-	const context = createThrelteContext({
+	export const threlteContext = createThrelteContext({
 		colorSpace: 'srgb',
 		toneMapping: ACESFilmicToneMapping,
 		dpr: 1,
@@ -33,17 +33,21 @@
 		useLegacyLights: false,
 	})
 
+	/**
+	 * We aren't interested as of now in providing a full mock.
+	 *
+	 * @type {any}
+	 */
 	const rendererMock = { domElement: canvas }
-	/** @ts-expect-error We aren't interested in providing a full mock. */
-	context.renderer = rendererMock
+	threlteContext.renderer = rendererMock
 
-	mockAdvanceFn(context)
+	mockAdvanceFn(threlteContext)
 
-	interactivity({
+	export const interactivityContext = interactivity({
 		compute: () => undefined,
 	})
 </script>
 
-<SceneGraphObject object={context.scene}>
+<SceneGraphObject object={threlteContext.scene}>
 	<svelte:component this={component} bind:this={ref} {...$$restProps} />
 </SceneGraphObject>

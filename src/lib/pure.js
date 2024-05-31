@@ -128,26 +128,27 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 	componentCache.add(component)
 
 	/**
-	 * @TODO(mp): Provide the context to the new Component call rather than pulling it out of the component.
-	 * Can be done when Svelte 4 support is dropped.
-	 *
 	 * @type {Threlte.ThrelteContext}
 	 */
-	const threlteContext = component.$$.context.get('threlte')
+	const context = component.threlteContext
 
-	const dispatcherContext = [...component.$$.context.values()].find((ctx) => {
-		return ctx.dispatchers || ctx.handlers
-	})
+	const interactivity = component.$$
+		? [...component.$$.context.values()].find((ctx) => {
+				return ctx.dispatchers || ctx.handlers
+			})
+		: component.interactivityContext
+
+	const handlers = interactivity.dispatchers || interactivity.handlers
 
 	return {
 		baseElement,
-		camera: threlteContext.camera,
+		camera: context.camera,
 		component: component.ref,
 		container: target,
-		context: threlteContext,
-		scene: threlteContext.scene,
+		context,
+		scene: context.scene,
 
-		advance: threlteContext.advance,
+		advance: context.advance,
 
 		/**
 		 *
@@ -156,8 +157,13 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 		 * @param {ThrelteExtras.IntersectionEvent<ThrelteEvents>=} payload
 		 */
 		fireEvent: async (object3D, event, payload) => {
-			const eventDispatcher = dispatcherContext.dispatchers.get(object3D)
-			eventDispatcher(event, payload)
+			const eventDispatcher = handlers.get(object3D)
+			if (typeof eventDispatcher === 'function') {
+				eventDispatcher(event, payload)
+			} else {
+				eventDispatcher[event](payload)
+			}
+
 			await Svelte.tick()
 		},
 
