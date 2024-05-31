@@ -2,6 +2,8 @@
 
 The `@threlte/test` is a lightweight component testing toolkit for Threlte components.
 
+It supports Svelte 4 + Threlte 7 and Svelte 5 + Threlte 8.
+
 ```ts
 import { describe, it, expect } from 'vitest'
 import { render } from '@threlte/test'
@@ -31,7 +33,7 @@ const {
 	advance, // (delta?: number) => void
 	fireEvent, // (object3D: THREE.Object3D, event, payload) => Promise<void>
 	rerender, // (props) => Promise<void>
-	unmount // () => void
+	unmount, // () => void
 } = render(Component)
 ```
 
