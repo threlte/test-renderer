@@ -1,5 +1,5 @@
 {
-	"name": "my-app",
+	"name": "@threlte/test",
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "vite dev",
@@ -21,13 +21,12 @@
 		}
 	},
 	"files": [
-		"dist",
-		"!dist/**/*.test.*",
-		"!dist/**/*.spec.*"
+		"src/lib"
 	],
 	"peerDependencies": {
 		"svelte": ">=4",
-		"@threlte/core": ">=7"
+		"@threlte/core": ">=7",
+		"@threlte/extras": ">=8"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.2.1",
@@ -53,11 +52,8 @@
 		"vite": "^5.2.12",
 		"vitest": "^1.6.0"
 	},
-	"svelte": "./dist/index.js",
-	"types": "./dist/index.d.ts",
 	"type": "module",
 	"dependencies": {
-		"@threlte/extras": "^8.11.2",
 		"jsdom": "^24.1.0"
 	}
 }

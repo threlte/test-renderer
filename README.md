@@ -1,6 +1,6 @@
 ### Threlte test renderer
 
-The test renderer is a lightweight unit testing toolkit for Threlte components.
+The `@threlte/test` is a lightweight component testing toolkit for Threlte components.
 
 ```ts
 import { describe, it, expect } from 'vitest'

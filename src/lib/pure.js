@@ -184,7 +184,7 @@ export const cleanup = () => {
 
 /**
  *
- * @param {(() => Promise<void>) | (() => void)} fn
+ * @param {((() => Promise<void>) | (() => void))=} fn
  * @returns {Promise<void>}
  */
 export const act = async (fn) => {
