@@ -1,5 +1,11 @@
 # @threlte/test
 
+## 0.1.1
+
+### Patch Changes
+
+- f40f5fe: Swallow THREE multiple instances warning
+
 ## 0.1.0
 
 ### Minor Changes
