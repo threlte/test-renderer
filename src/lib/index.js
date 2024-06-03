@@ -17,4 +17,4 @@ if (typeof window !== 'undefined') {
 	console.warn = warn
 }
 
-export { render, cleanup, act } from './pure'
+export { act, cleanup, render } from './pure'

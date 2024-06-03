@@ -19,8 +19,12 @@
 	},
 	"exports": {
 		".": {
-			"types": "./src/lib/index.js",
+			"types": "./src/lib/index.d.ts",
 			"import": "./src/lib/index.js"
+		},
+		"./vite": {
+			"types": "./src/lib/plugin.d.ts",
+			"import": "./src/lib/plugin.js"
 		}
 	},
 	"files": [

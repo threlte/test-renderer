@@ -75,9 +75,24 @@ expect(onClick).toHaveBeenCalledOnce()
 
 Note that if you use the event object, you will have to design a mock payload.
 
-### Cleanup
+### Setup
 
-In a vitest environment, cleanup after each test is automatically handled.
+We recommend using `@threlte/test` with Vitest as your test runner. To get started, add the `threlteTesting` plugin to your Vite or Vitest config.
+
+```diff
+   // vite.config.js
+   import { svelte } from '@sveltejs/vite-plugin-svelte'
+ + import { threlteTesting } from '@threlte/test/vite'
+
+   export default defineConfig({
+     plugins: [
+       svelte(),
+ +     threlteTesting(),
+     ]
+   });
+```
+
+Additionally, the [Vitest environment](https://vitest.dev/guide/environment.html) must be set to a DOM enviroment.
 
 ### Limitations
 
