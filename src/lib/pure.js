@@ -87,14 +87,15 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 	const checkedOptions = checkProps(componentOptions)
 
 	/** @type {HTMLElement} */
-	const baseElement = renderOptions.baseElement ?? checkedOptions.target ?? document.body
+	const baseElement =
+		renderOptions.baseElement ?? checkedOptions.target ?? globalThis.document?.body
 
 	/** @type {HTMLElement} */
-	const target = checkedOptions.target ?? baseElement.appendChild(document.createElement('div'))
+	const target = checkedOptions.target ?? baseElement?.appendChild(document.createElement('div'))
 	targetCache.add(target)
 
 	/** @type {HTMLCanvasElement} */
-	const canvas = renderOptions.canvas ?? document.createElement('canvas')
+	const canvas = renderOptions.canvas ?? globalThis.document?.createElement('canvas')
 	canvasCache.add(canvas)
 
 	/** @type {any} */

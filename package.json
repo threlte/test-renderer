@@ -21,6 +21,9 @@
 		".": {
 			"types": "./src/lib/index.js",
 			"import": "./src/lib/index.js"
+		},
+		"./vite": {
+			"import": "./src/lib/plugin.js"
 		}
 	},
 	"files": [
