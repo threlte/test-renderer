@@ -1,7 +1,7 @@
 {
 	"name": "@threlte/test",
-	"version": "0.0.0",
 	"license": "MIT",
+	"version": "0.0.1",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
