@@ -2,7 +2,7 @@
 
 <script>
 	import { ACESFilmicToneMapping } from 'three'
-	import { SvelteComponent, getContext } from 'svelte'
+	import { SvelteComponent } from 'svelte'
 	import { writable } from 'svelte/store'
 	import { SceneGraphObject, createThrelteContext } from '@threlte/core'
 	import { interactivity } from '@threlte/extras'
