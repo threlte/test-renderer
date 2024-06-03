@@ -1,11 +1,4 @@
 import * as Svelte from 'svelte'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as THREE from 'three'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as Threlte from '@threlte/core'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as ThrelteExtras from '@threlte/extras'
-
 import Container from './Container.svelte'
 import { Core } from './core.svelte.js'
 
@@ -128,7 +121,7 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 	componentCache.add(component)
 
 	/**
-	 * @type {Threlte.ThrelteContext}
+	 * @type {import('@threlte/core').ThrelteContext}
 	 */
 	const context = component.threlteContext
 
@@ -152,9 +145,9 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 
 		/**
 		 *
-		 * @param {THREE.Object3D} object3D
+		 * @param {import('three').Object3D} object3D
 		 * @param {ThrelteEvents} event
-		 * @param {ThrelteExtras.IntersectionEvent<ThrelteEvents>=} payload
+		 * @param {import('@threlte/extras').IntersectionEvent<ThrelteEvents>=} payload
 		 */
 		fireEvent: async (object3D, event, payload) => {
 			const eventDispatcher = handlers.get(object3D)

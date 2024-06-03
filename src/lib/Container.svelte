@@ -2,7 +2,6 @@
 
 <script>
 	import { SceneGraphObject, createThrelteContext } from '@threlte/core'
-
 	import { ACESFilmicToneMapping } from 'three'
 	import { interactivity } from '@threlte/extras'
 	import { mockAdvanceFn } from './advance'
