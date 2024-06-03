@@ -1,36 +1,36 @@
 <svelte:options accessors />
 
 <script>
-	import { ACESFilmicToneMapping } from 'three'
-	import { SvelteComponent } from 'svelte'
-	import { writable } from 'svelte/store'
 	import { SceneGraphObject, createThrelteContext } from '@threlte/core'
+
+	import { ACESFilmicToneMapping } from 'three'
 	import { interactivity } from '@threlte/extras'
 	import { mockAdvanceFn } from './advance'
+	import { writable } from 'svelte/store'
 
 	/** @type {HTMLCanvasElement} */
 	export let canvas
 
-	/** @type {typeof SvelteComponent} */
+	/** @type {typeof import('svelte').SvelteComponent} */
 	export let component
 
-	/** @type {SvelteComponent | undefined} */
+	/** @type {import('svelte').SvelteComponent | undefined} */
 	export let ref = undefined
 
-	/** @type {{ width: number, height: number }} */
-	export let userSize = { width: 1280, height: 720 }
+	/** @type {{ height: number, width: number }} */
+	export let userSize = { height: 720, width: 1280 }
 
 	export const threlteContext = createThrelteContext({
+		autoRender: true,
+		colorManagementEnabled: true,
 		colorSpace: 'srgb',
-		toneMapping: ACESFilmicToneMapping,
 		dpr: 1,
-		userSize: writable(userSize),
 		parentSize: writable(),
 		renderMode: 'manual',
-		autoRender: true,
 		shadows: true,
-		colorManagementEnabled: true,
+		toneMapping: ACESFilmicToneMapping,
 		useLegacyLights: false,
+		userSize: writable(userSize),
 	})
 
 	/**
@@ -44,7 +44,9 @@
 	mockAdvanceFn(threlteContext)
 
 	export const interactivityContext = interactivity({
-		compute: () => undefined,
+		compute: () => {
+			return undefined
+		},
 	})
 </script>
 

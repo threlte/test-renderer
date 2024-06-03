@@ -12,7 +12,8 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test": "vitest",
-		"test:watch": "vitest --watch"
+		"test:watch": "vitest --watch",
+		"release": "changeset publish"
 	},
 	"exports": {
 		".": {
@@ -34,8 +35,8 @@
 		"@sveltejs/kit": "^2.5.10",
 		"@sveltejs/package": "^2.3.1",
 		"@sveltejs/vite-plugin-svelte": "^3.1.1",
-		"@threlte/core": "^8.0.0-next.4",
-		"@threlte/extras": "^9.0.0-next.5",
+		"@threlte/core": "^7.3.0",
+		"@threlte/extras": "^8.11.2",
 		"@types/eslint": "^8.56.10",
 		"@types/three": "^0.165.0",
 		"@typescript-eslint/eslint-plugin": "^7.11.0",
@@ -46,7 +47,7 @@
 		"prettier": "^3.3.0",
 		"prettier-plugin-svelte": "^3.2.3",
 		"publint": "^0.2.8",
-		"svelte": "^5.0.0-next.144",
+		"svelte": "^4.2.17",
 		"svelte-check": "^3.8.0",
 		"three": "^0.165.0",
 		"tslib": "^2.6.2",
