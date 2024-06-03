@@ -1,5 +1,11 @@
 # @threlte/test
 
+## 0.1.0
+
+### Minor Changes
+
+- 73f1a2f: Initial release
+
 ## 0.0.2
 
 ### Patch Changes
