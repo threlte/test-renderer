@@ -82,7 +82,7 @@ We recommend using `@threlte/test` with Vitest as your test runner. To get start
 ```diff
    // vite.config.js
    import { svelte } from '@sveltejs/vite-plugin-svelte'
- + import { threlteTesting } from '@threlte/test'
+ + import { threlteTesting } from '@threlte/test/vite'
 
    export default defineConfig({
      plugins: [
