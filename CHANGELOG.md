@@ -1,5 +1,11 @@
 # @threlte/test
 
+## 0.2.1
+
+### Patch Changes
+
+- 8efcb4e: Add type export
+
 ## 0.2.0
 
 ### Minor Changes
