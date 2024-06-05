@@ -21,6 +21,17 @@ describe('Scene', () => {
 		expect(mesh.geometry).toBeInstanceOf(BoxGeometry)
 	})
 
+	it('updates position', async () => {
+		const { scene, rerender } = render(Scene, { positionX: 1 })
+
+		const mesh = scene.getObjectByProperty('isMesh', true) as Mesh
+		expect(mesh.position.x).toBe(1)
+
+		await rerender({ positionX: 2 })
+
+		expect(mesh.position.x).toBe(2)
+	})
+
 	it('creates a default perspective camera at position [1, 1, 1]', () => {
 		const { camera } = render(Scene)
 

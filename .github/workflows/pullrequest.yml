@@ -23,3 +23,6 @@ jobs:
 
       - name: Prettier 💅
         run: npm run prettier
+
+      - name: Test 🔬
+        run: npm run test

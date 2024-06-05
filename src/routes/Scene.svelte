@@ -2,6 +2,7 @@
 	import type { Mesh } from 'three'
 	import { T, useTask } from '@threlte/core'
 
+	export let positionX = 0
 	export let onClick: (() => void) | undefined = undefined
 
 	let ref: Mesh
@@ -21,7 +22,7 @@
 <T.DirectionalLight />
 <T.AmbientLight />
 
-<T.Mesh bind:ref on:click={onClick}>
+<T.Mesh bind:ref on:click={onClick} position.x={positionX}>
 	<T.MeshStandardMaterial />
 	<T.BoxGeometry />
 </T.Mesh>
