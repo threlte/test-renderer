@@ -1,5 +1,3 @@
-import { getContext } from 'svelte'
-
 /**
  * @typedef {{
  *   count?: number,
@@ -10,6 +8,7 @@ import { getContext } from 'svelte'
 /**
  * @typedef {{
  *   dispose: () => void,
+ *   frameInvalidated: boolean,
  *   resetFrameInvalidation: () => void
  * }} InternalCtx
  */
@@ -17,15 +16,14 @@ import { getContext } from 'svelte'
 /**
  *
  * @param context {import('@threlte/core').ThrelteContext}
+ * @param internalContext {InternalCtx}
  * @returns {undefined}
  */
-export const mockAdvanceFn = (context) => {
-	/** @type InternalCtx */
-	const internalContext = getContext('threlte-internal-context')
-
+export const mockAdvanceFn = (context, internalContext) => {
 	/**
 	 *
 	 * @param {AdvanceOptions} options
+	 * @returns {{ frameInvalidated: boolean }}
 	 */
 	context.advance = (options = {}) => {
 		internalContext.dispose()
@@ -38,5 +36,9 @@ export const mockAdvanceFn = (context) => {
 		}
 
 		internalContext.resetFrameInvalidation()
+
+		return {
+			frameInvalidated: internalContext.frameInvalidated,
+		}
 	}
 }

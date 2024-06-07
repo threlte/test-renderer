@@ -5,6 +5,7 @@
 	import { ACESFilmicToneMapping } from 'three'
 	import { interactivity } from '@threlte/extras'
 	import { mockAdvanceFn } from './advance'
+	import { getContext } from 'svelte'
 	import { writable } from 'svelte/store'
 
 	/** @type {HTMLCanvasElement} */
@@ -19,6 +20,14 @@
 	/** @type {{ height: number, width: number }} */
 	export let userSize = { height: 720, width: 1280 }
 
+	if (!globalThis.ResizeObserver) {
+		globalThis.ResizeObserver = class {
+			observe = () => {}
+			unobserve = () => {}
+			disconnect = () => {}
+		}
+	}
+
 	export const threlteContext = createThrelteContext({
 		autoRender: true,
 		colorManagementEnabled: true,
@@ -32,6 +41,14 @@
 		userSize: writable(userSize),
 	})
 
+	/** @type {{
+	 *   dispose: () => void,
+	 *   frameInvalidated: boolean,
+	 *   resetFrameInvalidation: () => void
+	 * }}
+	 */
+	export const internalContext = getContext('threlte-internal-context')
+
 	/**
 	 * We aren't interested as of now in providing a full mock.
 	 *
@@ -40,13 +57,9 @@
 	const rendererMock = { domElement: canvas }
 	threlteContext.renderer = rendererMock
 
-	mockAdvanceFn(threlteContext)
+	mockAdvanceFn(threlteContext, internalContext)
 
-	export const interactivityContext = interactivity({
-		compute: () => {
-			return undefined
-		},
-	})
+	export const interactivityContext = interactivity()
 </script>
 
 <SceneGraphObject object={threlteContext.scene}>

@@ -43,11 +43,17 @@ const {
 
 ### Advance
 
-In the test renderer environment, Threlte's render mode is set to `manual`. `advance` is very similar to the function of the same name returned by the `useThrelte` hook, but it advances at a fixed rate (16ms) regardless of environment. The number of times called and delta can also be configured when calling it.
+In the test renderer environment, Threlte's render mode is set to `manual`. If you wish to test results produced by running `useTask`, you must call `advance`. `advance` is very similar to the function of the same name returned by the `useThrelte` hook, but it advances at a fixed rate (16ms) regardless of environment. The number of times called and delta can also be configured when calling it.
 
 ```ts
 // Runs advance() 10 times with a 33.3ms delta
 advance({ delta: 33.3, count: 10 })
+```
+
+`advance` will also return a flag indicating whether calling it resulted in a frame invalidation.
+
+```ts
+const { frameInvalidated } = advance()
 ```
 
 ### fireEvent
