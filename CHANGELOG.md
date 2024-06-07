@@ -1,5 +1,11 @@
 # @threlte/test
 
+## 0.2.2
+
+### Patch Changes
+
+- f4f821a: Return frameInvalidated from advance function
+
 ## 0.2.1
 
 ### Patch Changes
