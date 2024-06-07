@@ -125,13 +125,22 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 	 */
 	const context = component.threlteContext
 
-	const interactivity = component.$$
+	/**
+	 * @type {{
+	 *   dispose: () => void,
+	 *   frameInvalidated: boolean,
+	 *   resetFrameInvalidation: () => void
+	 * }}
+	 */
+	const internalCtx = component.internalContext
+
+	const handlerCtx = component.$$
 		? [...component.$$.context.values()].find((ctx) => {
 				return ctx.dispatchers || ctx.handlers
 			})
 		: component.interactivityContext
 
-	const handlers = interactivity.dispatchers || interactivity.handlers
+	const handlers = handlerCtx.dispatchers || handlerCtx.handlers
 
 	return {
 		baseElement,
@@ -139,6 +148,7 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 		component: component.ref,
 		container: target,
 		context,
+		frameInvalidated: internalCtx.frameInvalidated,
 		scene: context.scene,
 
 		advance: context.advance,

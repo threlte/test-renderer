@@ -22,7 +22,7 @@
 <T.DirectionalLight />
 <T.AmbientLight />
 
-<T.Mesh bind:ref on:click={onClick} position.x={positionX}>
+<T.Mesh scale={0.5} bind:ref on:click={onClick} position.x={positionX}>
 	<T.MeshStandardMaterial />
 	<T.BoxGeometry />
 </T.Mesh>
