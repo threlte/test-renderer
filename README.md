@@ -10,14 +10,14 @@ import { render } from '@threlte/test'
 import Scene from './Scene.svelte'
 
 describe('Scene', () => {
-	it('creates a box mesh with a boxGeometry and meshStandardMaterial', () => {
-		const { scene } = render(Scene)
+  it('creates a box mesh with a boxGeometry and meshStandardMaterial', () => {
+    const { scene } = render(Scene)
 
-		const mesh = scene.getObjectByProperty('isMesh', true) as Mesh
-		expect(mesh).toBeDefined()
-		expect(mesh.material).toBeInstanceOf(MeshStandardMaterial)
-		expect(mesh.geometry).toBeInstanceOf(BoxGeometry)
-	})
+    const mesh = scene.getObjectByProperty('isMesh', true) as Mesh
+    expect(mesh).toBeDefined()
+    expect(mesh.material).toBeInstanceOf(MeshStandardMaterial)
+    expect(mesh.geometry).toBeInstanceOf(BoxGeometry)
+  })
 })
 ```
 
@@ -27,13 +27,13 @@ Calling `render` will provide useful tools for testing your component's behavior
 
 ```ts
 const {
-	component, // SvelteComponent
-	scene, // THREE.Scene
-	camera, // CurrentWritable<THREE.Camera>
-	advance, // (delta?: number) => void
-	fireEvent, // (object3D: THREE.Object3D, event, payload) => Promise<void>
-	rerender, // (props) => Promise<void>
-	unmount, // () => void
+  component, // SvelteComponent
+  scene, // THREE.Scene
+  camera, // CurrentWritable<THREE.Camera>
+  advance, // (delta?: number) => void
+  fireEvent, // (object3D: THREE.Object3D, event, payload) => Promise<void>
+  rerender, // (props) => Promise<void>
+  unmount, // () => void
 } = render(Component)
 ```
 
@@ -56,7 +56,7 @@ If your component uses the `interactivity` plugin, you can test events using the
 
 ```svelte
 <script lang="ts">
-	export let onClick
+  export let onClick
 </script>
 
 <T.Mesh on:click={onClick}>...</T.Mesh>
@@ -79,20 +79,22 @@ Note that if you use the event object, you will have to design a mock payload.
 
 We recommend using `@threlte/test` with Vitest as your test runner. To get started, add the `threlteTesting` plugin to your Vite or Vitest config.
 
-```diff
-   // vite.config.js
-   import { svelte } from '@sveltejs/vite-plugin-svelte'
- + import { threlteTesting } from '@threlte/test/vite'
+```ts
+// vite.config.js
+import { svelte } from '@sveltejs/vite-plugin-svelte'
+import { threlteTesting } from '@threlte/test/vite'
 
-   export default defineConfig({
-     plugins: [
-       svelte(),
- +     threlteTesting(),
-     ]
-   });
+export default defineConfig({
+  plugins: [
+    svelte(),
+    threlteTesting(),
+  ]
+});
 ```
 
 Additionally, the [Vitest environment](https://vitest.dev/guide/environment.html) must be set to a DOM enviroment.
+
+If you are using Svelte Testing Library and its plugin, the `threlteTesting` plugin isn't needed as they have the same internals.
 
 ### Limitations
 
