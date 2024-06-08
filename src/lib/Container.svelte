@@ -5,7 +5,7 @@
 	import { ACESFilmicToneMapping } from 'three'
 	import { interactivity } from '@threlte/extras'
 	import { mockAdvanceFn } from './advance'
-	import { getContext } from 'svelte'
+	import { getContext, setContext } from 'svelte'
 	import { writable } from 'svelte/store'
 
 	/** @type {HTMLCanvasElement} */
@@ -58,6 +58,8 @@
 	threlteContext.renderer = rendererMock
 
 	mockAdvanceFn(threlteContext, internalContext)
+
+	setContext('threlte-cache', [])
 
 	export const interactivityContext = interactivity()
 </script>
