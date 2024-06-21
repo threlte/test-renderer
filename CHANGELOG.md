@@ -1,5 +1,11 @@
 # @threlte/test
 
+## 0.2.4
+
+### Patch Changes
+
+- 21bdb2b: Fix memory leak and potential props clash
+
 ## 0.2.3
 
 ### Patch Changes
