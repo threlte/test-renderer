@@ -14,6 +14,9 @@
 	/** @type {typeof import('svelte').SvelteComponent} */
 	export let component
 
+	/** @type {Record<string, unknown> | undefined} */
+	export let componentProps
+
 	/** @type {import('svelte').SvelteComponent | undefined} */
 	export let ref = undefined
 
@@ -65,5 +68,5 @@
 </script>
 
 <SceneGraphObject object={threlteContext.scene}>
-	<svelte:component this={component} bind:this={ref} {...$$restProps} />
+	<svelte:component this={component} bind:this={ref} {...componentProps} />
 </SceneGraphObject>

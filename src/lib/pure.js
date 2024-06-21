@@ -3,19 +3,17 @@ import Container from './Container.svelte'
 import { Core } from './core.svelte.js'
 
 /**
+ * Check if a value is a plain object.
  *
  * @param {unknown} maybeObj
- * @returns {maybeObj is object}
+ * @returns {maybeObj is Record<string, unknown>}
  */
 const isObject = (maybeObj) => {
-	return typeof maybeObj === 'object' && maybeObj !== null
+	return typeof maybeObj === 'object' && maybeObj !== null && !Array.isArray(maybeObj)
 }
 
 /** @type {Set<HTMLElement>} */
 const targetCache = new Set()
-
-/** @type {Set<HTMLCanvasElement>} */
-const canvasCache = new Set()
 
 /** @type {Set<Svelte.SvelteComponent>} */
 const componentCache = new Set()
@@ -28,9 +26,13 @@ const componentCache = new Set()
 /**
  *
  * @param {Record<string, unknown>} options
- * @returns {Record<string, unknown> & { target?: HTMLElement }}
+ * @returns {Record<string, unknown> & { target?: HTMLElement, props?: Record<string, unknown> }}
  */
 const checkProps = (options) => {
+	if (!isObject(options)) {
+		throw new TypeError('Render options must be a plain object')
+	}
+
 	const keys = Object.keys(options)
 	const isProps = !keys.some((option) => {
 		return Core.componentOptions.includes(option)
@@ -43,13 +45,17 @@ const checkProps = (options) => {
 		})
 
 		if (unrecognizedOptions.length > 0) {
-			throw Error(`
+			throw new TypeError(`
           Unknown options were found [${unrecognizedOptions}]. This might happen if you've mixed
           passing in props with Svelte options into the render function. Valid Svelte options
           are [${Core.componentOptions}]. You can either change the prop names, or pass in your
           props for that component via the \`props\` option.\n\n
           Eg: const { /** Results **/ } = render(MyComponent, { props: { /** props here **/ } })\n\n
         `)
+		}
+
+		if (options.props && !isObject(options.props)) {
+			throw new TypeError('`props` option must be a plain object')
 		}
 
 		return options
@@ -95,7 +101,6 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 
 	/** @type {HTMLCanvasElement} */
 	const canvas = renderOptions.canvas ?? document.createElement('canvas')
-	canvasCache.add(canvas)
 
 	/** @type {any} */
 	const ComponentConstructor = 'default' in Component ? Component.default : Component
@@ -103,14 +108,17 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 	/** @type {any} */
 	const anyContainer = Container
 
+	/** @type {Record<string, unknown> | undefined} */
+	let componentProps = checkedOptions.props
+
 	const component = Core.renderComponent(
 		anyContainer,
 		{
 			...checkedOptions,
 			props: {
-				...(isObject(checkedOptions.props) ? checkedOptions.props : {}),
 				canvas,
 				component: ComponentConstructor,
+				componentProps,
 				userSize: renderOptions.userSize,
 			},
 			target,
@@ -175,7 +183,8 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 		 * @param {Record<string, unknown>} props
 		 */
 		rerender: async (props) => {
-			Core.updateProps(component, props)
+			componentProps = { ...componentProps, ...props }
+			Core.updateProps(component, { componentProps })
 			await Svelte.tick()
 		},
 

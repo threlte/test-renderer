@@ -3,6 +3,7 @@
 	"license": "MIT",
 	"version": "0.2.3",
 	"scripts": {
+		"all": "npm run check && npm run lint && npm run test && npm run build",
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
 		"preview": "vite preview",
