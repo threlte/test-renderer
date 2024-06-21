@@ -104,8 +104,6 @@ export default defineConfig({
 
 Additionally, the [Vitest environment](https://vitest.dev/guide/environment.html) must be set to a DOM enviroment.
 
-If you are using Svelte Testing Library and its plugin, the `threlteTesting` plugin isn't needed as they have the same internals.
-
 ### Limitations
 
 The test renderer runs in a node.js environment, and it does not attempt to mock a webgl canvas, which can become quite complicated. Instead, it creates a Threlte context and renders your component as a child of a Threlte `<SceneGraphObject>`. This means that testing `<Canvas>` or `WebGLRenderer` related configuration and behavior won't work.
