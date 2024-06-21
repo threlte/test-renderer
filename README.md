@@ -1,6 +1,6 @@
-## Threlte test renderer
+## @threlte/test
 
-The `@threlte/test` is a lightweight component testing toolkit for Threlte.
+`@threlte/test` is a lightweight component testing toolkit for Threlte.
 
 It supports Svelte 4 + Threlte 7 and Svelte 5 + Threlte 8.
 
