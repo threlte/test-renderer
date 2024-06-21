@@ -2,6 +2,10 @@
 
 `@threlte/test` is a lightweight component testing toolkit for Threlte.
 
+```
+npm i @threlte/test
+```
+
 It supports Svelte 4 + Threlte 7 and Svelte 5 + Threlte 8.
 
 ```ts
