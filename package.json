@@ -34,7 +34,8 @@
 	"peerDependencies": {
 		"@threlte/core": ">=7",
 		"@threlte/extras": ">=8",
-		"svelte": ">=4"
+		"svelte": ">=4",
+		"@testing-library/svelte": "*"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.27.5",
@@ -42,6 +43,7 @@
 		"@sveltejs/kit": "^2.5.10",
 		"@sveltejs/package": "^2.3.1",
 		"@sveltejs/vite-plugin-svelte": "^3.1.1",
+		"@testing-library/svelte": "github:testing-library/svelte-testing-library#feat-core",
 		"@threlte/core": "^7.3.0",
 		"@threlte/extras": "^8.11.2",
 		"@types/eslint": "^8.56.10",

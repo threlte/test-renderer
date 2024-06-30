@@ -17,4 +17,5 @@ if (typeof window !== 'undefined') {
 	console.warn = warn
 }
 
-export { act, cleanup, render } from './pure'
+export { act, render } from './pure'
+export { cleanup } from '@testing-library/svelte/core'
