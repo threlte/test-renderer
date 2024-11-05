@@ -5,8 +5,6 @@ import * as THREE from 'three'
 import type { CurrentWritable, ThrelteContext } from '@threlte/core'
 import type { IntersectionEvent, interactivity } from '@threlte/extras'
 
-export { act, cleanup, render } from './pure'
-
 /** @TODO export from @threlte/extras */
 
 type ThrelteEvents =
