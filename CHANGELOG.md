@@ -1,5 +1,11 @@
 # @threlte/test
 
+## 0.2.5
+
+### Patch Changes
+
+- 6cfe498: Fix exported types
+
 ## 0.2.4
 
 ### Patch Changes
