@@ -1,10 +1,10 @@
 import { defineConfig } from 'vite'
 import { sveltekit } from '@sveltejs/kit/vite'
-import { threlteTesting } from './src/lib/plugin'
+import { svelteTesting } from '@testing-library/svelte/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [sveltekit(), threlteTesting()],
+	plugins: [sveltekit(), svelteTesting()],
 	ssr: {
 		noExternal: ['three'],
 	},
