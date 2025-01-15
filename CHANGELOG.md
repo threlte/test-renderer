@@ -1,5 +1,11 @@
 # @threlte/test
 
+## 0.2.6
+
+### Patch Changes
+
+- a80bc21: Remove SceneGraphObject usage
+
 ## 0.2.5
 
 ### Patch Changes
