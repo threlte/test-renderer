@@ -1,7 +1,7 @@
 <svelte:options accessors />
 
 <script>
-	import { SceneGraphObject, createThrelteContext } from '@threlte/core'
+	import { T, createThrelteContext } from '@threlte/core'
 	import { ACESFilmicToneMapping } from 'three'
 	import { interactivity } from '@threlte/extras'
 	import { mockAdvanceFn } from './advance'
@@ -64,6 +64,6 @@
 	export const interactivityContext = interactivity()
 </script>
 
-<SceneGraphObject object={threlteContext.scene}>
+<T is={threlteContext.scene}>
 	<svelte:component this={component} bind:this={ref} {...$$restProps} />
-</SceneGraphObject>
+</T>
