@@ -1,5 +1,23 @@
 # @threlte/test
 
+## 0.2.5
+
+### Patch Changes
+
+- 6cfe498: Fix exported types
+
+## 0.2.4
+
+### Patch Changes
+
+- 21bdb2b: Fix memory leak and potential props clash
+
+## 0.2.3
+
+### Patch Changes
+
+- a54d0ce: Create threlte cache for every test
+
 ## 0.2.2
 
 ### Patch Changes

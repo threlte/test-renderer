@@ -1,6 +1,10 @@
-## Threlte test renderer
+## @threlte/test
 
-The `@threlte/test` is a lightweight component testing toolkit for Threlte.
+`@threlte/test` is a lightweight component testing toolkit for Threlte.
+
+```
+npm i @threlte/test
+```
 
 It supports Svelte 4 + Threlte 7 and Svelte 5 + Threlte 8.
 
@@ -99,8 +103,6 @@ export default defineConfig({
 ```
 
 Additionally, the [Vitest environment](https://vitest.dev/guide/environment.html) must be set to a DOM enviroment.
-
-If you are using Svelte Testing Library and its plugin, the `threlteTesting` plugin isn't needed as they have the same internals.
 
 ### Limitations
 
