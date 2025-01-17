@@ -101,6 +101,7 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 
 	/** @type {HTMLCanvasElement} */
 	const canvas = renderOptions.canvas ?? document.createElement('canvas')
+	target.append(canvas)
 
 	/** @type {any} */
 	const ComponentConstructor = 'default' in Component ? Component.default : Component
