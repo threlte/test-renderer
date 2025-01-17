@@ -16,29 +16,62 @@
 /**
  *
  * @param context {import('@threlte/core').ThrelteContext}
- * @param internalContext {InternalCtx}
+ * @param internalContext {InternalCtx | undefined}
  * @returns {undefined}
  */
 export const mockAdvanceFn = (context, internalContext) => {
 	/**
-	 *
-	 * @param {AdvanceOptions} options
-	 * @returns {{ frameInvalidated: boolean }}
+	 * Threlte 7
 	 */
-	context.advance = (options = {}) => {
-		internalContext.dispose()
+	if (internalContext) {
+		/**
+		 *
+		 * @param {AdvanceOptions} options
+		 * @returns {{ frameInvalidated: boolean }}
+		 */
+		context.advance = (options = {}) => {
+			internalContext.dispose()
 
-		const count = options.count ?? 1
-		for (let index = 0; index < count; index += 1) {
-			// @ts-expect-error @TODO(mp) Expose lastTime (marked private)? Allow more control over deltas in the run() call?
-			context.scheduler.lastTime = 0
-			context.scheduler.run(options.delta ?? 16)
+			const count = options.count ?? 1
+			for (let index = 0; index < count; index += 1) {
+				// @ts-expect-error @TODO(mp) Expose lastTime (marked private)? Allow more control over deltas in the run() call?
+				context.scheduler.lastTime = 0
+				context.scheduler.run(options.delta ?? 16)
+			}
+
+			internalContext.resetFrameInvalidation()
+
+			return {
+				frameInvalidated: internalContext.frameInvalidated,
+			}
 		}
+		/**
+		 * Threlte 8
+		 */
+	} else {
+		/**
+		 *
+		 * @param {AdvanceOptions} options
+		 * @returns {{ frameInvalidated: boolean }}
+		 */
+		context.advance = (options = {}) => {
+			// @ts-expect-error Remove once we only support Threlte 8
+			context.dispose()
 
-		internalContext.resetFrameInvalidation()
+			const count = options.count ?? 1
+			for (let index = 0; index < count; index += 1) {
+				// @ts-expect-error @TODO(mp) Expose lastTime (marked private)? Allow more control over deltas in the run() call?
+				context.scheduler.lastTime = 0
+				context.scheduler.run(options.delta ?? 16)
+			}
 
-		return {
-			frameInvalidated: internalContext.frameInvalidated,
+			// @ts-expect-error Remove once we only support Threlte 8
+			context.resetFrameInvalidation()
+
+			return {
+				// @ts-expect-error Remove once we only support Threlte 8
+				frameInvalidated: context.frameInvalidated,
+			}
 		}
 	}
 }
