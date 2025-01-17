@@ -1,7 +1,7 @@
 {
 	"name": "@threlte/test",
 	"license": "MIT",
-	"version": "0.2.8",
+	"version": "0.2.9",
 	"scripts": {
 		"all": "npm run check && npm run lint && npm run test && npm run build",
 		"dev": "vite dev",
