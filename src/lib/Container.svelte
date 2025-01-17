@@ -70,6 +70,6 @@
 	export const interactivityContext = interactivity()
 </script>
 
-<T is={threlteContext.scene}>
+<T is={threlteContext.scene} attach={false}>
 	<svelte:component this={component} bind:this={ref} {...componentProps} />
 </T>

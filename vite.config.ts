@@ -9,11 +9,15 @@ export default defineConfig({
 		noExternal: ['three'],
 	},
 	test: {
+		browser: {
+			enabled: true,
+			name: 'chromium',
+			provider: 'playwright',
+		},
 		coverage: {
 			include: ['src'],
 			provider: 'v8',
 		},
-		environment: 'jsdom',
 		mockReset: true,
 		unstubGlobals: true,
 	},

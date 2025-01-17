@@ -157,7 +157,11 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
 		component: component.ref,
 		container: target,
 		context,
-		frameInvalidated: internalCtx.frameInvalidated,
+		get frameInvalidated() {
+			if (internalCtx) return internalCtx.frameInvalidated
+			// @ts-expect-error Remove when we only support Threlte 8
+			return context.frameInvalidated
+		},
 		scene: context.scene,
 
 		advance: context.advance,
