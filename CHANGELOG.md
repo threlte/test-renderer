@@ -1,5 +1,11 @@
 # @threlte/test
 
+## 0.2.9
+
+### Patch Changes
+
+- dc90952: Use external context frameInvalidated prop
+
 ## 0.2.8
 
 ### Patch Changes
