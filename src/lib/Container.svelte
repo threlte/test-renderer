@@ -42,6 +42,9 @@
 		toneMapping: ACESFilmicToneMapping,
 		useLegacyLights: false,
 		userSize: writable(userSize),
+		// @ts-expect-error Support for Threlte 8
+		canvas,
+		dom: canvas.parentElement,
 	})
 
 	/** @type {{
