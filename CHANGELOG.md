@@ -1,5 +1,11 @@
 # @threlte/test
 
+## 0.2.7
+
+### Patch Changes
+
+- fa611e8: Add support for Threlte 8 dom context
+
 ## 0.2.6
 
 ### Patch Changes
