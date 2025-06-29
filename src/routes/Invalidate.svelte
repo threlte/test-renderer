@@ -1,22 +1,25 @@
-<script>
-	import { useTask, useThrelte } from '@threlte/core'
+<script lang="ts">
+  import { useTask, useThrelte } from '@threlte/core'
 
-	export let autoStart = false
-	export let autoInvalidate = true
+  interface Props {
+    autoStart: boolean
+    autoInvalidate: boolean
+    prop1?: number
+    prop2?: number
+  }
 
-	export let prop1 = 0
-	export let prop2 = 0
+  let { autoStart, autoInvalidate, prop1 = 0, prop2 = 0 }: Props = $props()
 
-	const { invalidate } = useThrelte()
+  const { invalidate } = useThrelte()
 
-	useTask(() => {}, { autoStart, autoInvalidate })
+  useTask(() => {}, { autoStart, autoInvalidate })
 
-	$: {
-		prop1
-	}
+  $effect.pre(() => {
+    prop1
+  })
 
-	$: {
-		prop2
-		invalidate()
-	}
+  $effect.pre(() => {
+    prop2
+    invalidate()
+  })
 </script>

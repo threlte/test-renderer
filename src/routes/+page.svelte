@@ -5,7 +5,7 @@
 
 <div>
 	<Canvas>
-		<Scene onClick={() => alert('hi')} />
+		<Scene onclick={() => alert('hi')} />
 	</Canvas>
 </div>
 

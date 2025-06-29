@@ -2,6 +2,43 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 /**
+ * Vite plugin to configure @threlte/test.
+ *
+ * Ensures Svelte is imported correctly in tests
+ * and that the DOM is cleaned up after each test.
+ *
+ * @param {{resolveBrowser?: boolean, autoCleanup?: boolean}} options
+ * @returns {import('vite').Plugin}
+ */
+export const threlteTesting = ({
+	resolveBrowser = true,
+	autoCleanup = true,
+	noExternal = true,
+} = {}) => {
+	return {
+		name: 'vite-plugin-threlte-test-renderer',
+
+		config: (config) => {
+			if (!process.env.VITEST) {
+				return
+			}
+
+			if (resolveBrowser) {
+				addBrowserCondition(config)
+			}
+
+			if (autoCleanup) {
+				addAutoCleanup(config)
+			}
+
+			if (noExternal) {
+				addNoExternal(config)
+			}
+		},
+	}
+}
+
+/**
  * Add `browser` to `resolve.conditions` before `node`.
  *
  * This ensures that Svelte's browser code is used in tests,
@@ -46,30 +83,41 @@ const addAutoCleanup = (config) => {
 }
 
 /**
- * Vite plugin to configure @threlte/test.
+ * Add `@threlte/test` to Vite's noExternal rules, if not present.
  *
- * Ensures Svelte is imported correctly in tests
- * and that the DOM is cleaned up after each test.
+ * This ensures `@threlte/test` is processed by `@sveltejs/vite-plugin-svelte`
+ * in certain monorepo setups.
  *
- * @param {{resolveBrowser?: boolean, autoCleanup?: boolean}} options
- * @returns {import('vite').Plugin}
+ *
+ * @param {import('vitest/config').UserConfig} config
  */
-export const threlteTesting = ({ resolveBrowser = true, autoCleanup = true } = {}) => {
-	return {
-		name: 'vite-plugin-threlte-test-renderer',
+const addNoExternal = (config) => {
+	const ssr = config.ssr ?? {}
+	let noExternal = ssr.noExternal ?? []
 
-		config: (config) => {
-			if (!process.env.VITEST) {
-				return
-			}
-
-			if (resolveBrowser) {
-				addBrowserCondition(config)
-			}
-
-			if (autoCleanup) {
-				addAutoCleanup(config)
-			}
-		},
+	if (noExternal === true) {
+		return
 	}
+
+	if (typeof noExternal === 'string' || noExternal instanceof RegExp) {
+		noExternal = [noExternal]
+	}
+
+	if (!Array.isArray(noExternal)) {
+		return
+	}
+
+	for (const rule of noExternal) {
+		if (typeof rule === 'string' && rule === '@threlte/test') {
+			return
+		}
+
+		if (rule instanceof RegExp && rule.test('@threlte/test')) {
+			return
+		}
+	}
+
+	noExternal.push('@threlte/test')
+	ssr.noExternal = noExternal
+	config.ssr = ssr
 }

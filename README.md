@@ -6,7 +6,7 @@
 npm i @threlte/test
 ```
 
-It supports Svelte 4 + Threlte 7 and Svelte 5 + Threlte 8.
+It supports Svelte 5 + Threlte 8 onwards.
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -34,7 +34,7 @@ const {
   component, // SvelteComponent
   scene, // THREE.Scene
   camera, // CurrentWritable<THREE.Camera>
-  advance, // (delta?: number) => void
+  advance, // ({ count?: number; delta?: number }) => void
   fireEvent, // (object3D: THREE.Object3D, event, payload) => Promise<void>
   rerender, // (props) => Promise<void>
   unmount, // () => void
@@ -54,40 +54,36 @@ In the test renderer environment, Threlte's render mode is set to `manual`. If y
 advance({ delta: 33.3, count: 10 })
 ```
 
-`advance` will also return a flag indicating whether calling it resulted in a frame invalidation.
-
-```ts
-const { frameInvalidated } = advance()
-```
-
 ### fireEvent
 
 If your component uses the `interactivity` plugin, you can test events using the `fireEvent` function. Let's say we have a component like this:
 
 ```svelte
-<script lang="ts">
-  export let onClick
+<script>
+  let { onclick } = $props()
 </script>
 
-<T.Mesh on:click={onClick}>...</T.Mesh>
+<T.Mesh {onclick} />
 ```
 
 We can write a test like this:
 
 ```ts
-const onClick = vi.fn()
-const { render, fireEvent } = render(Scene, { onClick })
+const onclick = vi.fn()
+const { render, fireEvent } = render(Scene, {
+  props: { onclick }
+})
 
 const mesh = scene.getObjectByName('myMesh')
 await fireEvent(mesh, 'click', someOptionalCustomPayload)
-expect(onClick).toHaveBeenCalledOnce()
+expect(onclick).toHaveBeenCalledOnce()
 ```
 
 Note that if you use the event object, you will have to design a mock payload.
 
 ### Setup
 
-We recommend using `@threlte/test` with Vitest as your test runner. To get started, add the `threlteTesting` plugin to your Vite or Vitest config.
+`@threlte/test` currently only supports vitest as your test runner. To get started, add the `threlteTesting` plugin to your Vite or Vitest config.
 
 ```ts
 // vite.config.js
@@ -102,10 +98,8 @@ export default defineConfig({
 });
 ```
 
-Additionally, the [Vitest environment](https://vitest.dev/guide/environment.html) must be set to a DOM enviroment.
+Additionally, the [Vitest environment](https://vitest.dev/guide/environment.html) must be set to a DOM enviroment, like happy-dom or vitest browser mode.
 
 ### Limitations
 
-The test renderer runs in a node.js environment, and it does not attempt to mock a webgl canvas, which can become quite complicated. Instead, it creates a Threlte context and renders your component as a child of a Threlte `<SceneGraphObject>`. This means that testing `<Canvas>` or `WebGLRenderer` related configuration and behavior won't work.
-
-This libary's primary purpose, however, is to allow you to test whether your component works in isolation as you intend it to work.
+The test renderer runs in a node.js environment, unless if running in vite browser mode. It creates a Threlte context and renders your component with this context provided. This must be considered when testing `<Canvas>` or `WebGLRenderer` related configuration and behavior.

@@ -1,75 +1,41 @@
-<svelte:options accessors />
-
 <script>
-	import { T, createThrelteContext } from '@threlte/core'
-	import { ACESFilmicToneMapping } from 'three'
-	import { interactivity } from '@threlte/extras'
-	import { mockAdvanceFn } from './advance'
-	import { getContext, setContext } from 'svelte'
-	import { writable } from 'svelte/store'
+  import { T, createThrelteContext } from '@threlte/core'
+  import { interactivity } from '@threlte/extras'
+  import { mockAdvanceFn } from './advance'
+  import { mockCanvas } from './canvas'
 
-	/** @type {HTMLCanvasElement} */
-	export let canvas
+  /**
+   * @type {{
+   *   canvas: HTMLCanvasElement
+   *   component: typeof import('svelte').SvelteComponent
+   *   ref: import('svelte').SvelteComponent | import('svelte').Component | undefined
+   *   [key: string]: any
+   * }}
+   */
+  let {
+    canvas = document.createElement('canvas'),
+    component: Component,
+    ref,
+    ...rest
+  } = $props()
 
-	/** @type {typeof import('svelte').SvelteComponent} */
-	export let component
+  const dom = document.createElement('div')
+  dom.style = `position: relative; width: 100%; height: 100%;`
+  dom.append(canvas)
 
-	/** @type {Record<string, unknown> | undefined} */
-	export let componentProps
+  canvas.style = `display: block; position: relative; width: 100%; height: 100%;`
+  mockCanvas(canvas)
 
-	/** @type {import('svelte').SvelteComponent | undefined} */
-	export let ref = undefined
-
-	/** @type {{ height: number, width: number }} */
-	export let userSize = { height: 720, width: 1280 }
-
-	if (!globalThis.ResizeObserver) {
-		globalThis.ResizeObserver = class {
-			observe = () => {}
-			unobserve = () => {}
-			disconnect = () => {}
-		}
-	}
-
-	export const threlteContext = createThrelteContext({
-		autoRender: true,
-		colorManagementEnabled: true,
-		colorSpace: 'srgb',
-		dpr: 1,
-		parentSize: writable(),
-		renderMode: 'manual',
-		shadows: true,
-		toneMapping: ACESFilmicToneMapping,
-		useLegacyLights: false,
-		userSize: writable(userSize),
-		// @ts-expect-error Support for Threlte 8
-		canvas,
-		dom: canvas.parentElement,
-	})
-
-	/** @type {{
-	 *   dispose: () => void,
-	 *   frameInvalidated: boolean,
-	 *   resetFrameInvalidation: () => void
-	 * }}
-	 */
-	export const internalContext = getContext('threlte-internal-context')
-
-	/**
-	 * We aren't interested as of now in providing a full mock.
-	 *
-	 * @type {any}
-	 */
-	const rendererMock = { domElement: canvas }
-	threlteContext.renderer = rendererMock
-
-	mockAdvanceFn(threlteContext, internalContext)
-
-	setContext('threlte-cache', [])
-
-	export const interactivityContext = interactivity()
+  /** @type {import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>} */
+  export const threlteContext = createThrelteContext({
+    renderMode: 'manual',
+    canvas,
+    dom,
+  })
+  export const advance = mockAdvanceFn(threlteContext)
+  export const interactivityContext = interactivity()
 </script>
 
 <T is={threlteContext.scene} attach={false}>
-	<svelte:component this={component} bind:this={ref} {...componentProps} />
+  <Component bind:this={ref} {...rest} />
 </T>
