@@ -15,10 +15,10 @@ export default defineConfig(({ mode }) => ({
   test: {
     browser: {
       provider: 'playwright',
-      enabled: false,
+      enabled: true,
       instances: [{ browser: 'chromium' }],
     },
-    environment: 'happy-dom',
+    // environment: 'happy-dom',
     coverage: { include: ['src'] },
     mockReset: true,
     unstubGlobals: true,

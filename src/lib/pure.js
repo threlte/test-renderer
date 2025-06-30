@@ -48,7 +48,6 @@ const cleanupComponent = (component) => {
  *   scene: import('three').Scene
  *   context: import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>
  *   component: import('./component-types.js').Exports<C>
- *   frameInvalidated: boolean
  *   fireEvent(object3D: import('three').Object3D, event: ThrelteEvents, payload?: import('@threlte/extras').IntersectionEvent<ThrelteEvents>): Promise<void>
  *   advance: (options?: { count?: number; delta?: number }) => ({ frameInvalidated: boolean })
  *   rerender: (props?: Partial<import('./component-types.js').Props<C>>) => Promise<void>
@@ -107,11 +106,6 @@ export const render = (Component, options = {}, renderOptions = {}) => {
 
   componentCache.add(component)
 
-  /**
-   * @type {import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>}
-   */
-  const context = component.threlteContext
-
   const handlerCtx = component.$$
     ? [...component.$$.context.values()].find((ctx) => {
         return ctx.dispatchers || ctx.handlers
@@ -122,16 +116,11 @@ export const render = (Component, options = {}, renderOptions = {}) => {
 
   return {
     baseElement,
-    camera: context.camera,
+    camera: component.context.camera,
     component: component.ref,
     container: target,
-    context,
-    get frameInvalidated() {
-      // @ts-expect-error Not typed
-      return context.frameInvalidated
-    },
-    scene: context.scene,
-
+    context: component.context,
+    scene: component.context.scene,
     advance: component.advance,
 
     fireEvent: async (object3D, event, payload) => {

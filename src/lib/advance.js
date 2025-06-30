@@ -5,34 +5,28 @@
  * }} AdvanceOptions
  */
 
-/**
- * @typedef {{
- *   dispose: () => void,
- *   frameInvalidated: boolean,
- *   resetFrameInvalidation: () => void
- * }} InternalCtx
- */
+import { useScheduler } from '@threlte/core'
 
 /**
  *
  * @param context {import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>}
  */
-export const mockAdvanceFn = (context) => {
+export const mockAdvanceFn = () => {
+  const context = useScheduler()
+
   /**
    *
    * @param {AdvanceOptions} options
    */
   const advance = (options = {}) => {
-    const count = options.count ?? 1
+    const { count = 1, delta = 16 } = options
 
     for (let index = 0; index < count; index += 1) {
-      // @ts-expect-error @TODO(mp) Expose lastTime (marked private)? Allow more control over deltas in the run() call?
+      // @ts-ignore Set last time to get precise deltas
       context.scheduler.lastTime = 0
-      context.scheduler.run(options.delta ?? 16)
+      context.scheduler.run(delta ?? 16)
     }
   }
-
-  context.advance = advance
 
   return advance
 }

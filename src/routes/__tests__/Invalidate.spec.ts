@@ -40,7 +40,7 @@ describe('<Invalidate>', () => {
     expect(context.shouldRender()).toBe(false)
   })
 
-  it('does not invalidate when a prop change does not call invalidate()', () => {
+  it('invalidates on an invalidate() call', async () => {
     const { context, advance } = render(Subject, {
       props: {
         autoInvalidate: false,
@@ -50,6 +50,6 @@ describe('<Invalidate>', () => {
     })
 
     advance()
-    expect(context.shouldRender()).toBe(false)
+    expect(context.shouldRender()).toBe(true)
   })
 })

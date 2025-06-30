@@ -1,5 +1,5 @@
 <script>
-  import { T, createThrelteContext } from '@threlte/core'
+  import { createThrelteContext, useScheduler } from '@threlte/core'
   import { interactivity } from '@threlte/extras'
   import { mockAdvanceFn } from './advance'
   import { mockCanvas } from './canvas'
@@ -27,15 +27,16 @@
   mockCanvas(canvas)
 
   /** @type {import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>} */
-  export const threlteContext = createThrelteContext({
-    renderMode: 'manual',
+  export const context = createThrelteContext({
+    renderMode: 'on-demand',
     canvas,
     dom,
   })
-  export const advance = mockAdvanceFn(threlteContext)
+  export const scheduler = useScheduler()
+  scheduler.resetFrameInvalidation()
+
+  export const advance = mockAdvanceFn()
   export const interactivityContext = interactivity()
 </script>
 
-<T is={threlteContext.scene} attach={false}>
-  <Component bind:this={ref} {...rest} />
-</T>
+<Component bind:this={ref} {...rest} />

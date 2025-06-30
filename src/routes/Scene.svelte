@@ -9,8 +9,6 @@
 
   let { x = 0, onclick }: Props = $props()
 
-  $inspect(x)
-
   let ref = $state.raw<Mesh>()
 
   useTask((dt) => {

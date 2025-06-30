@@ -5,21 +5,17 @@
     autoStart: boolean
     autoInvalidate: boolean
     prop1?: number
-    prop2?: number
   }
 
-  let { autoStart, autoInvalidate, prop1 = 0, prop2 = 0 }: Props = $props()
+  let { autoStart, autoInvalidate, prop1 }: Props = $props()
 
   const { invalidate } = useThrelte()
 
   useTask(() => {}, { autoStart, autoInvalidate })
 
   $effect.pre(() => {
-    prop1
-  })
-
-  $effect.pre(() => {
-    prop2
-    invalidate()
+    if (prop1) {
+      invalidate()
+    }
   })
 </script>
