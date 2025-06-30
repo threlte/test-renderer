@@ -14,7 +14,7 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "prettier": "prettier --check .",
-    "lint": "prettier --check . && eslint .",
+    "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest --watch",
@@ -55,6 +55,7 @@
     "eslint": "^9.30.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-svelte": "^3.10.1",
+    "eslint-plugin-unicorn": "^59.0.1",
     "happy-dom": "^18.0.1",
     "playwright": "^1.53.1",
     "prettier": "^3.6.2",
@@ -65,6 +66,7 @@
     "three": "^0.177.0",
     "tslib": "^2.8.1",
     "typescript": "^5.8.3",
+    "typescript-eslint": "^8.35.0",
     "vite": "^7.0.0",
     "vitest": "^3.2.4"
   }

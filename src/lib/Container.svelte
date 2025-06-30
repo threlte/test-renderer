@@ -20,10 +20,11 @@
   } = $props()
 
   const dom = document.createElement('div')
-  dom.style = `position: relative; width: 100%; height: 100%;`
+  dom.style = 'position: relative; width: 100%; height: 100%;'
   dom.append(canvas)
 
-  canvas.style = `display: block; position: relative; width: 100%; height: 100%;`
+  canvas.style =
+    'display: block; position: relative; width: 100%; height: 100%;'
   mockCanvas(canvas)
 
   /** @type {import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>} */

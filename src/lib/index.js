@@ -13,7 +13,6 @@ if (typeof window !== 'undefined') {
     originalWarn.call(console, ...args)
   }
 
-  // eslint-disable-next-line no-console
   console.warn = warn
 }
 

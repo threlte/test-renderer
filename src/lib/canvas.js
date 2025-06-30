@@ -7,11 +7,11 @@ export const mockCanvas = (canvas) => {
     const context = canvas.getContext('webgl2')
 
     if (context === null) {
-      // @ts-ignore This mock is sufficient
+      // @ts-expect-error This mock is sufficient
       canvas.getContext = () => new WebGL2RenderingContext(canvas)
     }
   } catch {
-    // @ts-ignore  This mock is sufficient
+    // @ts-expect-error  This mock is sufficient
     canvas.getContext = () => new WebGL2RenderingContext(canvas)
   }
 }
@@ -732,14 +732,16 @@ const extensions = {
 }
 
 export class WebGL2RenderingContext {
-  // @ts-ignore
+  /**
+   * @param {HTMLCanvasElement} canvas
+   */
   constructor(canvas) {
     this.canvas = canvas
     this.drawingBufferWidth = canvas.width
     this.drawingBufferHeight = canvas.height
 
     for (const method of functions) {
-      // @ts-ignore
+      // @ts-expect-error Ignore
       this[method] ??= () => {}
     }
 
@@ -758,7 +760,9 @@ export class WebGL2RenderingContext {
   SCISSOR_BOX = 3088
   VIEWPORT = 2978
 
-  // @ts-ignore
+  /**
+   * @param {any} paramId
+   */
   getParameter(paramId) {
     switch (paramId) {
       case this.GL_VERSION:
@@ -769,9 +773,11 @@ export class WebGL2RenderingContext {
     }
   }
 
-  // @ts-ignore
+  /**
+   * @param {string | number} ext
+   */
   getExtension(ext) {
-    // @ts-ignore
+    // @ts-expect-error Ignore
     return extensions[ext]
   }
 

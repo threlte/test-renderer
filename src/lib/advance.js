@@ -22,7 +22,7 @@ export const mockAdvanceFn = () => {
     const { count = 1, delta = 16 } = options
 
     for (let index = 0; index < count; index += 1) {
-      // @ts-ignore Set last time to get precise deltas
+      // @ts-expect-error Set last time to get precise deltas
       context.scheduler.lastTime = 0
       context.scheduler.run(delta ?? 16)
     }

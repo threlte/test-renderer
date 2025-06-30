@@ -3,6 +3,7 @@ import globals from 'globals'
 import svelte from 'eslint-plugin-svelte'
 import prettier from 'eslint-config-prettier'
 import ts from 'typescript-eslint'
+import eslintPluginUnicorn from 'eslint-plugin-unicorn'
 import svelteConfig from './svelte.config.js'
 
 export default ts.config(
@@ -11,6 +12,11 @@ export default ts.config(
   ...ts.configs.recommended,
   ...svelte.configs.recommended,
   ...svelte.configs.prettier,
+  {
+    plugins: {
+      unicorn: eslintPluginUnicorn,
+    },
+  },
   {
     languageOptions: {
       globals: {
@@ -55,18 +61,10 @@ export default ts.config(
       'array-bracket-newline': ['error', 'consistent'],
       'array-element-newline': 'off',
       'arrow-body-style': 'off',
+      'max-len': 'off',
+      'quote-props': 'off',
       camelcase: ['error', { properties: 'never' }],
       'capitalized-comments': 'off',
-      'comma-dangle': [
-        'error',
-        {
-          arrays: 'always-multiline',
-          exports: 'never',
-          functions: 'never',
-          imports: 'never',
-          objects: 'always-multiline',
-        },
-      ],
       complexity: 'off',
       'default-case': 'off',
       'default-last-param': 'off',
@@ -78,7 +76,6 @@ export default ts.config(
       'linebreak-style': ['error', 'unix'],
       'lines-around-comment': 'off',
       'lines-between-class-members': 'off',
-      'max-len': ['error', { code: 140 }],
       'max-lines': 'off',
       'max-lines-per-function': 'off',
       'max-params': 'off',
@@ -103,7 +100,6 @@ export default ts.config(
       'prefer-destructuring': 'off',
       'sort-keys': 'off',
       'sort-imports': 'off',
-      'quote-props': ['error', 'consistent-as-needed'],
       quotes: ['error', 'single'],
       semi: ['error', 'never'],
 
@@ -112,15 +108,6 @@ export default ts.config(
       'unicorn/no-keyword-prefix': ['error', { checkProperties: false }],
       'unicorn/no-array-for-each': 'off',
       'unicorn/no-null': 'off',
-      'unicorn/filename-case': [
-        'error',
-        {
-          cases: {
-            camelCase: true,
-            pascalCase: true,
-          },
-        },
-      ],
 
       '@typescript-eslint/prefer-for-of': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
