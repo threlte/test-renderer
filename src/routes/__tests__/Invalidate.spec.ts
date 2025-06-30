@@ -4,33 +4,52 @@ import Subject from '../Invalidate.svelte'
 import { render } from '../../lib'
 
 describe('<Invalidate>', () => {
-	it('does not invalidate on a frozen useTask', () => {
-		const { advance } = render(Subject)
+  it('does not invalidate on a frozen useTask', () => {
+    const { context, advance } = render(Subject, {
+      props: {
+        autoStart: false,
+        autoInvalidate: false,
+      },
+    })
 
-		const { frameInvalidated } = advance()
+    advance()
+    expect(context.shouldRender()).toBe(false)
+  })
 
-		expect(frameInvalidated).toBe(false)
-	})
+  it('invalidates on a running useTask', async () => {
+    const { context, advance } = render(Subject, {
+      props: {
+        autoStart: true,
+        autoInvalidate: true,
+      },
+    })
 
-	it('invalidates on a running useTask', () => {
-		const { advance } = render(Subject, { autoStart: true })
+    advance()
+    expect(context.shouldRender()).toBe(true)
+  })
 
-		const { frameInvalidated } = advance()
+  it('does not invalidate when autoInvalidate is false on a running useTask', () => {
+    const { context, advance } = render(Subject, {
+      props: {
+        autoInvalidate: false,
+        autoStart: true,
+      },
+    })
 
-		expect(frameInvalidated).toBe(false)
-	})
+    advance()
+    expect(context.shouldRender()).toBe(false)
+  })
 
-	it('does not invalidate when autoInvalidate is false on a running useTask', () => {
-		const { advance } = render(Subject, { autoInvalidate: false, autoStart: true })
+  it('invalidates on an invalidate() call', async () => {
+    const { context, advance } = render(Subject, {
+      props: {
+        autoInvalidate: false,
+        autoStart: false,
+        prop1: 10,
+      },
+    })
 
-		const { frameInvalidated } = advance()
-
-		expect(frameInvalidated).toBe(false)
-	})
-
-	// @TODO ongoing discussion
-	it.skip('does not invalidate when a prop change does not call invalidate()', () => {
-		const { frameInvalidated } = render(Subject, { prop1: 10 })
-		expect(frameInvalidated).toBe(false)
-	})
+    advance()
+    expect(context.shouldRender()).toBe(true)
+  })
 })

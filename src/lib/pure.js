@@ -1,22 +1,22 @@
 import * as Svelte from 'svelte'
 import Container from './Container.svelte'
-import { Core } from './core.svelte.js'
+import { mount, unmount, updateProps, validateOptions } from './core/index.js'
+
+const targetCache = new Set()
+const componentCache = new Set()
 
 /**
- * Check if a value is a plain object.
+ * Customize how Svelte renders the component.
  *
- * @param {unknown} maybeObj
- * @returns {maybeObj is Record<string, unknown>}
+ * @template {import('./component-types.js').Component} C
+ * @typedef {import('./component-types.js').Props<C> | Partial<import('./component-types.js').MountOptions<C>>} SvelteComponentOptions
  */
-const isObject = (maybeObj) => {
-	return typeof maybeObj === 'object' && maybeObj !== null && !Array.isArray(maybeObj)
-}
 
-/** @type {Set<HTMLElement>} */
-const targetCache = new Set()
-
-/** @type {Set<Svelte.SvelteComponent>} */
-const componentCache = new Set()
+/**
+ * The rendered component and bound testing functions.
+ *
+ * @template {import('./component-types.js').Component} C
+ */
 
 /**
  * @TODO export this from @threlte/extras
@@ -25,178 +25,125 @@ const componentCache = new Set()
 
 /**
  *
- * @param {Record<string, unknown>} options
- * @returns {Record<string, unknown> & { target?: HTMLElement, props?: Record<string, unknown> }}
- */
-const checkProps = (options) => {
-	if (!isObject(options)) {
-		throw new TypeError('Render options must be a plain object')
-	}
-
-	const keys = Object.keys(options)
-	const isProps = !keys.some((option) => {
-		return Core.componentOptions.includes(option)
-	})
-
-	// Check if any props and Svelte options were accidentally mixed.
-	if (!isProps) {
-		const unrecognizedOptions = keys.filter((option) => {
-			return !Core.componentOptions.includes(option)
-		})
-
-		if (unrecognizedOptions.length > 0) {
-			throw new TypeError(`
-          Unknown options were found [${unrecognizedOptions}]. This might happen if you've mixed
-          passing in props with Svelte options into the render function. Valid Svelte options
-          are [${Core.componentOptions}]. You can either change the prop names, or pass in your
-          props for that component via the \`props\` option.\n\n
-          Eg: const { /** Results **/ } = render(MyComponent, { props: { /** props here **/ } })\n\n
-        `)
-		}
-
-		if (options.props && !isObject(options.props)) {
-			throw new TypeError('`props` option must be a plain object')
-		}
-
-		return options
-	}
-
-	return { props: options }
-}
-
-/**
- *
- * @param {Svelte.SvelteComponent<any, any, any>} component
+ * @param {import('./component-types.js').ComponentType<C>} component
  */
 const cleanupComponent = (component) => {
-	const inCache = componentCache.delete(component)
+  const inCache = componentCache.delete(component)
 
-	if (inCache) {
-		Core.cleanupComponent(component)
-	}
+  if (inCache) {
+    unmount(component)
+  }
 }
 
 /**
+ * The rendered component and bound testing functions.
  *
- * @param {typeof Svelte.SvelteComponent<any, any, any>} Component
- * @param {{
- *   target?: HTMLElement
- * } & Record<string, unknown>} componentOptions
+ * @template {import('./component-types.js').Component} C
+ * @template {import('@testing-library/dom').Queries} [Q=typeof import('@testing-library/dom').queries]
+ *
+ * @typedef {{
+ *   container: HTMLElement
+ *   baseElement: HTMLElement
+ *   camera: import('@threlte/core').CurrentWritable<import('three').Camera>
+ *   scene: import('three').Scene
+ *   context: import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>
+ *   component: import('./component-types.js').Exports<C>
+ *   fireEvent(object3D: import('three').Object3D, event: ThrelteEvents, payload?: import('@threlte/extras').IntersectionEvent<ThrelteEvents>): Promise<void>
+ *   advance: (options?: { count?: number; delta?: number }) => ({ frameInvalidated: boolean })
+ *   rerender: (props?: Partial<import('./component-types.js').Props<C>>) => Promise<void>
+ *   unmount: () => void
+ * }} RenderResult
+ */
+
+/**
+ * Render a component into the document.
+ *
+ * @template {import('./component-types.js').Component} C
+ * @template {import('@testing-library/dom').Queries} [Q=typeof import('@testing-library/dom').queries]
+ *
+ * @param {import('./component-types.js').ComponentType<C>} Component - The component to render.
+ * @param {SvelteComponentOptions<C>} options - Customize how Svelte renders the component.
  * @param {{
  *   baseElement?: HTMLElement
  *   canvas?: HTMLCanvasElement
- *   userSize?: { width: number; height: number }
  * }} renderOptions
- * @returns
+ * @returns {RenderResult<C, Q>} The rendered component and bound testing functions.
  */
-export const render = (Component, componentOptions = {}, renderOptions = {}) => {
-	const checkedOptions = checkProps(componentOptions)
+export const render = (Component, options = {}, renderOptions = {}) => {
+  const checkedOptions = validateOptions(options)
 
-	/** @type {HTMLElement} */
-	const baseElement = renderOptions.baseElement ?? checkedOptions.target ?? document.body
+  /** @type {HTMLElement} */
+  const baseElement =
+    renderOptions.baseElement ??
+    checkedOptions.target ??
+    globalThis.document.body
 
-	/** @type {HTMLElement} */
-	const target = checkedOptions.target ?? baseElement.appendChild(document.createElement('div'))
-	targetCache.add(target)
+  const defaultTarget = document.createElement('div')
+  defaultTarget.style = 'width:200px;height:200px'
 
-	/** @type {HTMLCanvasElement} */
-	const canvas = renderOptions.canvas ?? document.createElement('canvas')
-	target.append(canvas)
+  /** @type {HTMLElement} */
+  const target = checkedOptions.target ?? baseElement.appendChild(defaultTarget)
 
-	/** @type {any} */
-	const ComponentConstructor = 'default' in Component ? Component.default : Component
+  targetCache.add(target)
 
-	/** @type {any} */
-	const anyContainer = Container
+  /** @type {HTMLCanvasElement} */
+  const canvas = renderOptions.canvas ?? document.createElement('canvas')
+  target.append(canvas)
 
-	/** @type {Record<string, unknown> | undefined} */
-	let componentProps = checkedOptions.props
+  const component = mount(
+    Container,
+    {
+      ...checkedOptions,
+      props: {
+        canvas,
+        component: 'default' in Component ? Component.default : Component,
+        ...checkedOptions.props,
+      },
+      target,
+    },
+    cleanupComponent
+  )
 
-	const component = Core.renderComponent(
-		anyContainer,
-		{
-			...checkedOptions,
-			props: {
-				canvas,
-				component: ComponentConstructor,
-				componentProps,
-				userSize: renderOptions.userSize,
-			},
-			target,
-		},
-		cleanupComponent
-	)
+  componentCache.add(component)
 
-	componentCache.add(component)
+  const handlerCtx = component.$$
+    ? [...component.$$.context.values()].find((ctx) => {
+        return ctx.dispatchers || ctx.handlers
+      })
+    : component.interactivityContext
 
-	/**
-	 * @type {import('@threlte/core').ThrelteContext}
-	 */
-	const context = component.threlteContext
+  const handlers = handlerCtx.dispatchers || handlerCtx.handlers
 
-	/**
-	 * @type {{
-	 *   dispose: () => void,
-	 *   frameInvalidated: boolean,
-	 *   resetFrameInvalidation: () => void
-	 * }}
-	 */
-	const internalCtx = component.internalContext
+  return {
+    baseElement,
+    camera: component.context.camera,
+    component: component.ref,
+    container: target,
+    context: component.context,
+    scene: component.context.scene,
+    advance: component.advance,
 
-	const handlerCtx = component.$$
-		? [...component.$$.context.values()].find((ctx) => {
-				return ctx.dispatchers || ctx.handlers
-			})
-		: component.interactivityContext
+    fireEvent: async (object3D, event, payload) => {
+      const eventDispatcher = handlers.get(object3D)
 
-	const handlers = handlerCtx.dispatchers || handlerCtx.handlers
+      if (typeof eventDispatcher === 'function') {
+        eventDispatcher(event, payload)
+      } else {
+        eventDispatcher[`on${event}`](payload)
+      }
 
-	return {
-		baseElement,
-		camera: context.camera,
-		component: component.ref,
-		container: target,
-		context,
-		get frameInvalidated() {
-			if (internalCtx) return internalCtx.frameInvalidated
-			// @ts-expect-error Remove when we only support Threlte 8
-			return context.frameInvalidated
-		},
-		scene: context.scene,
+      await Svelte.tick()
+    },
 
-		advance: context.advance,
+    rerender: async (props = {}) => {
+      updateProps(component, props)
+      await Svelte.tick()
+    },
 
-		/**
-		 *
-		 * @param {import('three').Object3D} object3D
-		 * @param {ThrelteEvents} event
-		 * @param {import('@threlte/extras').IntersectionEvent<ThrelteEvents>=} payload
-		 */
-		fireEvent: async (object3D, event, payload) => {
-			const eventDispatcher = handlers.get(object3D)
-			if (typeof eventDispatcher === 'function') {
-				eventDispatcher(event, payload)
-			} else {
-				eventDispatcher[event](payload)
-			}
-
-			await Svelte.tick()
-		},
-
-		/**
-		 *
-		 * @param {Record<string, unknown>} props
-		 */
-		rerender: async (props) => {
-			componentProps = { ...componentProps, ...props }
-			Core.updateProps(component, { componentProps })
-			await Svelte.tick()
-		},
-
-		unmount: () => {
-			cleanupComponent(component)
-		},
-	}
+    unmount: () => {
+      cleanupComponent(component)
+    },
+  }
 }
 
 /**
@@ -204,16 +151,16 @@ export const render = (Component, componentOptions = {}, renderOptions = {}) => 
  * @param {HTMLElement} target
  */
 const cleanupTarget = (target) => {
-	const inCache = targetCache.delete(target)
+  const inCache = targetCache.delete(target)
 
-	if (inCache && target.parentNode === document.body) {
-		document.body.removeChild(target)
-	}
+  if (inCache && target.parentNode === document.body) {
+    document.body.removeChild(target)
+  }
 }
 
 export const cleanup = () => {
-	componentCache.forEach(cleanupComponent)
-	targetCache.forEach(cleanupTarget)
+  componentCache.forEach(cleanupComponent)
+  targetCache.forEach(cleanupTarget)
 }
 
 /**
@@ -222,8 +169,8 @@ export const cleanup = () => {
  * @returns {Promise<void>}
  */
 export const act = async (fn) => {
-	if (fn) {
-		await fn()
-	}
-	return Svelte.tick()
+  if (fn) {
+    await fn()
+  }
+  return Svelte.tick()
 }

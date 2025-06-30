@@ -1,28 +1,33 @@
 <script lang="ts">
-	import type { Mesh } from 'three'
-	import { T, useTask } from '@threlte/core'
+  import type { Mesh } from 'three'
+  import { T, useTask } from '@threlte/core'
 
-	export let positionX = 0
-	export let onClick: (() => void) | undefined = undefined
+  interface Props {
+    x?: number
+    onclick?: () => void
+  }
 
-	let ref: Mesh
+  let { x = 0, onclick }: Props = $props()
 
-	useTask((dt) => {
-		ref.rotation.x += dt
-		ref.rotation.y += dt
-	})
+  let ref = $state.raw<Mesh>()
+
+  useTask((dt) => {
+    if (!ref) return
+    ref.rotation.x += dt
+    ref.rotation.y += dt
+  })
 </script>
 
 <T.PerspectiveCamera
-	makeDefault
-	position={[1, 1, 1]}
-	on:create={({ ref }) => ref.lookAt(0, 0, 0)}
+  makeDefault
+  position={[1, 1, 1]}
+  oncreate={(ref) => ref.lookAt(0, 0, 0)}
 />
 
 <T.DirectionalLight />
 <T.AmbientLight />
 
-<T.Mesh scale={0.5} bind:ref on:click={onClick} position.x={positionX}>
-	<T.MeshStandardMaterial />
-	<T.BoxGeometry />
+<T.Mesh bind:ref scale={0.5} position.x={x} {onclick}>
+  <T.MeshStandardMaterial />
+  <T.BoxGeometry />
 </T.Mesh>

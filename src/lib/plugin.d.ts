@@ -7,6 +7,6 @@ import type { Plugin } from 'vite'
  * and that the DOM is cleaned up after each test.
  */
 export function threlteTesting(options?: {
-	resolveBrowser?: boolean
-	autoCleanup?: boolean
+  resolveBrowser?: boolean
+  autoCleanup?: boolean
 }): Plugin
