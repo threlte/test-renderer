@@ -1,5 +1,11 @@
 # @threlte/test
 
+## 1.0.0
+
+### Major Changes
+
+- f685b2d: Add Threlte 8 support, remove Threlte 7 support
+
 ## 0.2.9
 
 ### Patch Changes
