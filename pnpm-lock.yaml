@@ -29,6 +29,9 @@ importers:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^5.1.0
         version: 5.1.0(svelte@5.34.9)(vite@7.0.0(@types/node@20.19.2))
+      '@testing-library/dom':
+        specifier: ^10.4.0
+        version: 10.4.0
       '@threlte/core':
         specifier: 8.0.5
         version: 8.0.5(svelte@5.34.9)(three@0.177.0)
