@@ -22,16 +22,16 @@
   },
   "exports": {
     ".": {
-      "types": "./src/lib/index.d.ts",
-      "import": "./src/lib/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./vite": {
-      "types": "./src/lib/plugin.d.ts",
-      "import": "./src/lib/plugin.js"
+      "types": "./dist/plugin.d.ts",
+      "import": "./dist/plugin.js"
     }
   },
   "files": [
-    "src/lib"
+    "dist"
   ],
   "peerDependencies": {
     "@threlte/core": ">=8",
