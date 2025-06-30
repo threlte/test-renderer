@@ -2,7 +2,7 @@
   "name": "@threlte/test",
   "license": "MIT",
   "description": "Threlte component testing utilities.",
-  "version": "0.2.9",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "all": "pnpm check && pnpm lint && pnpm test && pnpm build",
