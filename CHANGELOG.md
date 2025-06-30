@@ -1,5 +1,29 @@
 # @threlte/test
 
+## 0.2.9
+
+### Patch Changes
+
+- dc90952: Use external context frameInvalidated prop
+
+## 0.2.8
+
+### Patch Changes
+
+- 6a5112a: Support Threlte 8 frame advancing
+
+## 0.2.7
+
+### Patch Changes
+
+- fa611e8: Add support for Threlte 8 dom context
+
+## 0.2.6
+
+### Patch Changes
+
+- a80bc21: Remove SceneGraphObject usage
+
 ## 0.2.5
 
 ### Patch Changes
