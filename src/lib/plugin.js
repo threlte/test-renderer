@@ -11,31 +11,31 @@ import { fileURLToPath } from 'node:url'
  * @returns {import('vite').Plugin}
  */
 export const threlteTesting = ({
-	resolveBrowser = true,
-	autoCleanup = true,
-	noExternal = true,
+  resolveBrowser = true,
+  autoCleanup = true,
+  noExternal = true,
 } = {}) => {
-	return {
-		name: 'vite-plugin-threlte-test-renderer',
+  return {
+    name: 'vite-plugin-threlte-test-renderer',
 
-		config: (config) => {
-			if (!process.env.VITEST) {
-				return
-			}
+    config: (config) => {
+      if (!process.env.VITEST) {
+        return
+      }
 
-			if (resolveBrowser) {
-				addBrowserCondition(config)
-			}
+      if (resolveBrowser) {
+        addBrowserCondition(config)
+      }
 
-			if (autoCleanup) {
-				addAutoCleanup(config)
-			}
+      if (autoCleanup) {
+        addAutoCleanup(config)
+      }
 
-			if (noExternal) {
-				addNoExternal(config)
-			}
-		},
-	}
+      if (noExternal) {
+        addNoExternal(config)
+      }
+    },
+  }
 }
 
 /**
@@ -47,20 +47,20 @@ export const threlteTesting = ({
  * @param {import('vitest/config').UserConfig} config
  */
 const addBrowserCondition = (config) => {
-	const resolve = config.resolve ?? {}
-	const conditions = resolve.conditions ?? []
-	const nodeConditionIndex = conditions.indexOf('node')
-	const browserConditionIndex = conditions.indexOf('browser')
+  const resolve = config.resolve ?? {}
+  const conditions = resolve.conditions ?? []
+  const nodeConditionIndex = conditions.indexOf('node')
+  const browserConditionIndex = conditions.indexOf('browser')
 
-	if (
-		nodeConditionIndex >= 0 &&
-		(nodeConditionIndex < browserConditionIndex || browserConditionIndex < 0)
-	) {
-		conditions.splice(nodeConditionIndex, 0, 'browser')
-	}
+  if (
+    nodeConditionIndex >= 0 &&
+    (nodeConditionIndex < browserConditionIndex || browserConditionIndex < 0)
+  ) {
+    conditions.splice(nodeConditionIndex, 0, 'browser')
+  }
 
-	resolve.conditions = conditions
-	config.resolve = resolve
+  resolve.conditions = conditions
+  config.resolve = resolve
 }
 
 /**
@@ -69,17 +69,17 @@ const addBrowserCondition = (config) => {
  * @param {import('vitest/config').UserConfig} config
  */
 const addAutoCleanup = (config) => {
-	const test = config.test ?? {}
-	let setupFiles = test.setupFiles ?? []
+  const test = config.test ?? {}
+  let setupFiles = test.setupFiles ?? []
 
-	if (typeof setupFiles === 'string') {
-		setupFiles = [setupFiles]
-	}
+  if (typeof setupFiles === 'string') {
+    setupFiles = [setupFiles]
+  }
 
-	setupFiles.push(join(dirname(fileURLToPath(import.meta.url)), './vitest.js'))
+  setupFiles.push(join(dirname(fileURLToPath(import.meta.url)), './vitest.js'))
 
-	test.setupFiles = setupFiles
-	config.test = test
+  test.setupFiles = setupFiles
+  config.test = test
 }
 
 /**
@@ -92,32 +92,32 @@ const addAutoCleanup = (config) => {
  * @param {import('vitest/config').UserConfig} config
  */
 const addNoExternal = (config) => {
-	const ssr = config.ssr ?? {}
-	let noExternal = ssr.noExternal ?? []
+  const ssr = config.ssr ?? {}
+  let noExternal = ssr.noExternal ?? []
 
-	if (noExternal === true) {
-		return
-	}
+  if (noExternal === true) {
+    return
+  }
 
-	if (typeof noExternal === 'string' || noExternal instanceof RegExp) {
-		noExternal = [noExternal]
-	}
+  if (typeof noExternal === 'string' || noExternal instanceof RegExp) {
+    noExternal = [noExternal]
+  }
 
-	if (!Array.isArray(noExternal)) {
-		return
-	}
+  if (!Array.isArray(noExternal)) {
+    return
+  }
 
-	for (const rule of noExternal) {
-		if (typeof rule === 'string' && rule === '@threlte/test') {
-			return
-		}
+  for (const rule of noExternal) {
+    if (typeof rule === 'string' && rule === '@threlte/test') {
+      return
+    }
 
-		if (rule instanceof RegExp && rule.test('@threlte/test')) {
-			return
-		}
-	}
+    if (rule instanceof RegExp && rule.test('@threlte/test')) {
+      return
+    }
+  }
 
-	noExternal.push('@threlte/test')
-	ssr.noExternal = noExternal
-	config.ssr = ssr
+  noExternal.push('@threlte/test')
+  ssr.noExternal = noExternal
+  config.ssr = ssr
 }
