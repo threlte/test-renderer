@@ -7,21 +7,21 @@
   /**
    * @type {{
    *   canvas: HTMLCanvasElement
+   *   container: HTMLElement
    *   component: typeof import('svelte').SvelteComponent
+   *   contextOptions?: Record<string, any>
    *   ref: import('svelte').SvelteComponent | import('svelte').Component | undefined
    *   [key: string]: any
    * }}
    */
   let {
     canvas = document.createElement('canvas'),
+    container,
     component: Component,
+    contextOptions = {},
     ref,
     ...rest
   } = $props()
-
-  const dom = document.createElement('div')
-  dom.style = 'position: relative; width: 100%; height: 100%;'
-  dom.append(canvas)
 
   canvas.style =
     'display: block; position: relative; width: 100%; height: 100%;'
@@ -30,8 +30,9 @@
   /** @type {import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>} */
   export const context = createThrelteContext({
     renderMode: 'on-demand',
+    ...contextOptions,
     canvas,
-    dom,
+    dom: container,
   })
   export const scheduler = useScheduler()
   scheduler.resetFrameInvalidation()

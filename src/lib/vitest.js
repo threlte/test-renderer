@@ -1,7 +1,11 @@
 import { act, cleanup } from './index.js'
-import { afterEach } from 'vitest'
+import { beforeEach } from 'vitest'
 
-afterEach(async () => {
+const afterEach = async () => {
   await act()
   cleanup()
+}
+
+beforeEach(() => {
+  return afterEach
 })

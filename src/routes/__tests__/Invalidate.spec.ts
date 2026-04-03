@@ -5,43 +5,43 @@ import { render } from '../../lib'
 
 describe('<Invalidate>', () => {
   it('does not invalidate on a frozen useTask', () => {
-    const { context, advance } = render(Subject, {
+    const { advance } = render(Subject, {
       props: {
         autoStart: false,
         autoInvalidate: false,
       },
     })
 
-    advance()
-    expect(context.shouldRender()).toBe(false)
+    const { frameInvalidated } = advance()
+    expect(frameInvalidated).toBe(false)
   })
 
   it('invalidates on a running useTask', async () => {
-    const { context, advance } = render(Subject, {
+    const { advance } = render(Subject, {
       props: {
         autoStart: true,
         autoInvalidate: true,
       },
     })
 
-    advance()
-    expect(context.shouldRender()).toBe(true)
+    const { frameInvalidated } = advance()
+    expect(frameInvalidated).toBe(true)
   })
 
   it('does not invalidate when autoInvalidate is false on a running useTask', () => {
-    const { context, advance } = render(Subject, {
+    const { advance } = render(Subject, {
       props: {
         autoInvalidate: false,
         autoStart: true,
       },
     })
 
-    advance()
-    expect(context.shouldRender()).toBe(false)
+    const { frameInvalidated } = advance()
+    expect(frameInvalidated).toBe(false)
   })
 
   it('invalidates on an invalidate() call', async () => {
-    const { context, advance } = render(Subject, {
+    const { advance } = render(Subject, {
       props: {
         autoInvalidate: false,
         autoStart: false,
@@ -49,7 +49,7 @@ describe('<Invalidate>', () => {
       },
     })
 
-    advance()
-    expect(context.shouldRender()).toBe(true)
+    const { frameInvalidated } = advance()
+    expect(frameInvalidated).toBe(true)
   })
 })

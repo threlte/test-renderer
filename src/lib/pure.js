@@ -1,39 +1,14 @@
 import * as Svelte from 'svelte'
+
 import Container from './Container.svelte'
-import { mount, unmount, updateProps, validateOptions } from './core/index.js'
-
-const targetCache = new Set()
-const componentCache = new Set()
-
-/**
- * Customize how Svelte renders the component.
- *
- * @template {import('./component-types.js').Component} C
- * @typedef {import('./component-types.js').Props<C> | Partial<import('./component-types.js').MountOptions<C>>} SvelteComponentOptions
- */
-
-/**
- * The rendered component and bound testing functions.
- *
- * @template {import('./component-types.js').Component} C
- */
+import { cleanup } from './cleanup.js'
+import { mount } from './mount.js'
+import { setup } from './setup.js'
 
 /**
  * @TODO export this from @threlte/extras
  * @typedef {'click' | 'contextmenu' | 'dblclick' | 'wheel' | 'pointerup' | 'pointerdown' | 'pointerover' | 'pointerout' | 'pointerenter' | 'pointerleave' | 'pointermove' | 'pointermissed'} ThrelteEvents
  */
-
-/**
- *
- * @param {import('./component-types.js').ComponentType<C>} component
- */
-const cleanupComponent = (component) => {
-  const inCache = componentCache.delete(component)
-
-  if (inCache) {
-    unmount(component)
-  }
-}
 
 /**
  * The rendered component and bound testing functions.
@@ -62,63 +37,38 @@ const cleanupComponent = (component) => {
  * @template {import('@testing-library/dom').Queries} [Q=typeof import('@testing-library/dom').queries]
  *
  * @param {import('./component-types.js').ComponentType<C>} Component - The component to render.
- * @param {SvelteComponentOptions<C>} options - Customize how Svelte renders the component.
+ * @param {import('./component-types.js').Props<C> | Partial<import('./component-types.js').MountOptions<C>>} options - Customize how Svelte renders the component.
  * @param {{
  *   baseElement?: HTMLElement
  *   canvas?: HTMLCanvasElement
+ *   context?: Record<string, any>
  * }} renderOptions
  * @returns {RenderResult<C, Q>} The rendered component and bound testing functions.
  */
-export const render = (Component, options = {}, renderOptions = {}) => {
-  const checkedOptions = validateOptions(options)
-
-  /** @type {HTMLElement} */
-  const baseElement =
-    renderOptions.baseElement ??
-    checkedOptions.target ??
-    globalThis.document.body
-
-  const defaultTarget = document.createElement('div')
-  defaultTarget.style = 'width:200px;height:200px'
-
-  /** @type {HTMLElement} */
-  const target = checkedOptions.target ?? baseElement.appendChild(defaultTarget)
-
-  targetCache.add(target)
-
-  /** @type {HTMLCanvasElement} */
-  const canvas = renderOptions.canvas ?? document.createElement('canvas')
-  target.append(canvas)
-
-  const component = mount(
-    Container,
-    {
-      ...checkedOptions,
-      props: {
-        canvas,
-        component: 'default' in Component ? Component.default : Component,
-        ...checkedOptions.props,
-      },
-      target,
-    },
-    cleanupComponent
+const render = (Component, options = {}, renderOptions = {}) => {
+  const { baseElement, container, canvas, mountOptions } = setup(
+    options,
+    renderOptions
   )
 
-  componentCache.add(component)
+  const { component, unmount, rerender } = mount(Container, {
+    ...mountOptions,
+    props: {
+      canvas,
+      container,
+      component: 'default' in Component ? Component.default : Component,
+      contextOptions: renderOptions.context,
+      ...mountOptions.props,
+    },
+  })
 
-  const handlerCtx = component.$$
-    ? [...component.$$.context.values()].find((ctx) => {
-        return ctx.dispatchers || ctx.handlers
-      })
-    : component.interactivityContext
-
-  const handlers = handlerCtx.dispatchers || handlerCtx.handlers
+  const handlers = component.interactivityContext.handlers
 
   return {
     baseElement,
     camera: component.context.camera,
     component: component.ref,
-    container: target,
+    container,
     context: component.context,
     scene: component.context.scene,
     advance: component.advance,
@@ -136,41 +86,25 @@ export const render = (Component, options = {}, renderOptions = {}) => {
     },
 
     rerender: async (props = {}) => {
-      updateProps(component, props)
+      rerender(props)
       await Svelte.tick()
     },
 
-    unmount: () => {
-      cleanupComponent(component)
-    },
+    unmount,
   }
 }
 
 /**
- *
- * @param {HTMLElement} target
- */
-const cleanupTarget = (target) => {
-  const inCache = targetCache.delete(target)
-
-  if (inCache && target.parentNode === document.body) {
-    document.body.removeChild(target)
-  }
-}
-
-export const cleanup = () => {
-  componentCache.forEach(cleanupComponent)
-  targetCache.forEach(cleanupTarget)
-}
-
-/**
+ * Call a function and wait for Svelte to flush pending changes.
  *
  * @param {((() => Promise<void>) | (() => void))=} fn
  * @returns {Promise<void>}
  */
-export const act = async (fn) => {
+const act = async (fn) => {
   if (fn) {
     await fn()
   }
   return Svelte.tick()
 }
+
+export { act, cleanup, render }
