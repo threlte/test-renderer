@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
-  Component as ModernComponent,
   ComponentProps,
+  Component as ModernComponent,
   mount,
 } from 'svelte'
 

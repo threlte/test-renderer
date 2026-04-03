@@ -1,6 +1,7 @@
 <script>
   import { createThrelteContext, useScheduler } from '@threlte/core'
   import { interactivity } from '@threlte/extras'
+
   import { mockAdvanceFn } from './advance'
   import { mockCanvas } from './canvas'
 

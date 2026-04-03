@@ -1,7 +1,7 @@
 import * as Svelte from 'svelte'
 
-import Container from './Container.svelte'
 import { cleanup } from './cleanup.js'
+import Container from './Container.svelte'
 import { mount } from './mount.js'
 import { setup } from './setup.js'
 

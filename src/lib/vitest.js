@@ -1,5 +1,6 @@
-import { act, cleanup } from './index.js'
 import { beforeEach } from 'vitest'
+
+import { act, cleanup } from './index.js'
 
 const afterEach = async () => {
   await act()

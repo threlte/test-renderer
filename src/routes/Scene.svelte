@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Mesh } from 'three'
+
   import { T, useTask } from '@threlte/core'
 
   interface Props {

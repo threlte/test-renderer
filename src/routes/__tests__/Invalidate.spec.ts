@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import Subject from '../Invalidate.svelte'
 import { render } from '../../lib'
+import Subject from '../Invalidate.svelte'
 
 describe('<Invalidate>', () => {
   it('does not invalidate on a frozen useTask', () => {
