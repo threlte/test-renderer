@@ -1,6 +1,8 @@
 /**
  * Component mounting core for Svelte 5.
  */
+/** @typedef {{ [key: string]: any }} Props */
+
 import * as Svelte from 'svelte'
 
 import { addCleanupTask, removeCleanupTask } from './cleanup.js'
@@ -22,7 +24,11 @@ const mount = (Component, options) => {
     removeCleanupTask(unmount)
   }
 
-  /** Update the component's props. */
+  /**
+   * Update the component's props.
+   *
+   * @param {Props} nextProps
+   */
   const rerender = (nextProps) => {
     Svelte.flushSync(() => updateProps(nextProps))
   }

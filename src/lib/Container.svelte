@@ -23,17 +23,19 @@
     ...rest
   } = $props()
 
-  canvas.style =
-    'display: block; position: relative; width: 100%; height: 100%;'
-  mockCanvas(canvas)
+  $effect.pre(() => {
+    canvas.style =
+      'display: block; position: relative; width: 100%; height: 100%;'
+    mockCanvas(canvas)
+  })
 
   /** @type {import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>} */
-  export const context = createThrelteContext({
+  export const context = createThrelteContext(() => ({
     renderMode: 'on-demand',
     ...contextOptions,
     canvas,
     dom: container,
-  })
+  }))
   export const scheduler = useScheduler()
   scheduler.resetFrameInvalidation()
 
