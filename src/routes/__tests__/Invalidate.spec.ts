@@ -5,14 +5,31 @@ import Subject from '../Invalidate.svelte'
 
 describe('<Invalidate>', () => {
   it('does not invalidate on a frozen useTask', () => {
-    const { advance } = render(Subject, {
+    const { advance, context } = render(Subject, {
       props: {
         autoStart: false,
         autoInvalidate: false,
       },
     })
 
+    // Debug: check state before advance
+    context.frameInvalidated.current = false
+    console.log('before advance:', {
+      frameInvalidated: context.frameInvalidated.current,
+      autoInvalidations: context.autoInvalidations.size,
+      renderMode: context.renderMode.current,
+      shouldRender: context.shouldRender(),
+    })
+
     const { frameInvalidated } = advance()
+
+    console.log('after advance:', {
+      frameInvalidated: context.frameInvalidated.current,
+      autoInvalidations: context.autoInvalidations.size,
+      shouldRender: context.shouldRender(),
+      returnedFrameInvalidated: frameInvalidated,
+    })
+
     expect(frameInvalidated).toBe(false)
   })
 
@@ -41,15 +58,19 @@ describe('<Invalidate>', () => {
   })
 
   it('invalidates on an invalidate() call', async () => {
-    const { advance } = render(Subject, {
+    const { advance, rerender } = render(Subject, {
       props: {
         autoInvalidate: false,
         autoStart: false,
-        prop1: 10,
       },
     })
 
-    const { frameInvalidated } = advance()
-    expect(frameInvalidated).toBe(true)
+    const first = advance()
+    expect(first.frameInvalidated).toBe(false)
+
+    await rerender({ prop1: 10 })
+
+    const second = advance()
+    expect(second.frameInvalidated).toBe(true)
   })
 })

@@ -33,6 +33,7 @@
   /** @type {import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>} */
   export const context = createThrelteContext(() => ({
     renderMode: 'on-demand',
+    autoRender: false,
     ...contextOptions,
     canvas,
     dom: container,
