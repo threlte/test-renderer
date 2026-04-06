@@ -5,31 +5,17 @@ import Subject from '../Invalidate.svelte'
 
 describe('<Invalidate>', () => {
   it('does not invalidate on a frozen useTask', () => {
-    const { advance, context } = render(Subject, {
+    const { advance } = render(Subject, {
       props: {
         autoStart: false,
         autoInvalidate: false,
       },
     })
 
-    // Debug: check state before advance
-    context.frameInvalidated.current = false
-    console.log('before advance:', {
-      frameInvalidated: context.frameInvalidated.current,
-      autoInvalidations: context.autoInvalidations.size,
-      renderMode: context.renderMode.current,
-      shouldRender: context.shouldRender(),
-    })
+    // First advance drains setup invalidation
+    advance()
 
     const { frameInvalidated } = advance()
-
-    console.log('after advance:', {
-      frameInvalidated: context.frameInvalidated.current,
-      autoInvalidations: context.autoInvalidations.size,
-      shouldRender: context.shouldRender(),
-      returnedFrameInvalidated: frameInvalidated,
-    })
-
     expect(frameInvalidated).toBe(false)
   })
 
@@ -40,6 +26,8 @@ describe('<Invalidate>', () => {
         autoInvalidate: true,
       },
     })
+
+    advance()
 
     const { frameInvalidated } = advance()
     expect(frameInvalidated).toBe(true)
@@ -53,6 +41,8 @@ describe('<Invalidate>', () => {
       },
     })
 
+    advance()
+
     const { frameInvalidated } = advance()
     expect(frameInvalidated).toBe(false)
   })
@@ -64,6 +54,8 @@ describe('<Invalidate>', () => {
         autoStart: false,
       },
     })
+
+    advance()
 
     const first = advance()
     expect(first.frameInvalidated).toBe(false)
