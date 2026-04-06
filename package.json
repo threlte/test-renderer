@@ -4,6 +4,7 @@
   "description": "Threlte component testing utilities.",
   "version": "1.0.0",
   "type": "module",
+  "packageManager": "pnpm@10.11.1",
   "scripts": {
     "all": "pnpm check && pnpm lint && pnpm test && pnpm build",
     "dev": "vite dev",
