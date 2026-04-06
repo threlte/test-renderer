@@ -34,7 +34,7 @@ const {
   component, // SvelteComponent
   scene, // THREE.Scene
   camera, // CurrentWritable<THREE.Camera>
-  advance, // ({ count?: number; delta?: number }) => void
+  advance, // ({ count?: number; delta?: number }) => { frameInvalidated: boolean }
   fireEvent, // (object3D: THREE.Object3D, event, payload) => Promise<void>
   rerender, // (props) => Promise<void>
   unmount, // () => void
@@ -47,11 +47,45 @@ const {
 
 ### Advance
 
-In the test renderer environment, Threlte's render mode is set to `manual`. If you wish to test results produced by running `useTask`, you must call `advance`. `advance` is very similar to the function of the same name returned by the `useThrelte` hook, but it advances at a fixed rate (16ms) regardless of environment. The number of times called and delta can also be configured when calling it.
+If you wish to test results produced by running `useTask`, you must call `advance`. `advance` runs the scheduler and returns `{ frameInvalidated }` indicating whether the frame needed rendering. The delta defaults to 16ms but can be configured.
 
 ```ts
 // Runs advance() 10 times with a 33.3ms delta
 advance({ delta: 33.3, count: 10 })
+```
+
+`advance` returns `{ frameInvalidated: boolean }`, which reflects whether `shouldRender()` was true for that frame. This is useful for testing on-demand and manual render mode invalidation logic.
+
+```ts
+const { advance } = render(MyComponent)
+
+const { frameInvalidated } = advance()
+expect(frameInvalidated).toBe(true)
+```
+
+#### First advance after render
+
+The first `advance()` call after `render()` will always return `{ frameInvalidated: true }`. This is expected — Threlte's internal setup (renderer properties, camera, resize detection) calls `invalidate()` during initialization, just as it does in production on the first animation frame.
+
+When testing invalidation behavior, call `advance()` once to drain the setup invalidation, then use subsequent calls for your assertions:
+
+```ts
+const { advance, rerender } = render(MyComponent, {
+  props: { autoInvalidate: false },
+})
+
+// Drain setup invalidation
+advance()
+
+// Now test real invalidation behavior
+const { frameInvalidated } = advance()
+expect(frameInvalidated).toBe(false)
+
+// Trigger invalidation via prop change
+await rerender({ someProp: 'newValue' })
+
+const result = advance()
+expect(result.frameInvalidated).toBe(true)
 ```
 
 ### fireEvent

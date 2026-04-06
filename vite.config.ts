@@ -1,7 +1,8 @@
-import { createRequire } from 'node:module'
-
-import { defineConfig } from 'vite'
 import { sveltekit } from '@sveltejs/kit/vite'
+import { playwright } from '@vitest/browser-playwright'
+import { createRequire } from 'node:module'
+import { defineConfig } from 'vite'
+
 import { threlteTesting } from './src/lib/plugin'
 
 const require = createRequire(import.meta.url)
@@ -14,11 +15,10 @@ export default defineConfig(({ mode }) => ({
   },
   test: {
     browser: {
-      provider: 'playwright',
       enabled: true,
+      provider: playwright(),
       instances: [{ browser: 'chromium' }],
     },
-    // environment: 'happy-dom',
     coverage: { include: ['src'] },
     mockReset: true,
     unstubGlobals: true,

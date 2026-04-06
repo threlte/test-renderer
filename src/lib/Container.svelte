@@ -1,38 +1,43 @@
 <script>
   import { createThrelteContext, useScheduler } from '@threlte/core'
   import { interactivity } from '@threlte/extras'
+
   import { mockAdvanceFn } from './advance'
   import { mockCanvas } from './canvas'
 
   /**
    * @type {{
    *   canvas: HTMLCanvasElement
+   *   container: HTMLElement
    *   component: typeof import('svelte').SvelteComponent
+   *   contextOptions?: Record<string, any>
    *   ref: import('svelte').SvelteComponent | import('svelte').Component | undefined
    *   [key: string]: any
    * }}
    */
   let {
     canvas = document.createElement('canvas'),
+    container,
     component: Component,
+    contextOptions = {},
     ref,
     ...rest
   } = $props()
 
-  const dom = document.createElement('div')
-  dom.style = 'position: relative; width: 100%; height: 100%;'
-  dom.append(canvas)
-
-  canvas.style =
-    'display: block; position: relative; width: 100%; height: 100%;'
-  mockCanvas(canvas)
+  $effect.pre(() => {
+    canvas.style =
+      'display: block; position: relative; width: 100%; height: 100%;'
+    mockCanvas(canvas)
+  })
 
   /** @type {import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>} */
-  export const context = createThrelteContext({
+  export const context = createThrelteContext(() => ({
     renderMode: 'on-demand',
+    autoRender: false,
+    ...contextOptions,
     canvas,
-    dom,
-  })
+    dom: container,
+  }))
   export const scheduler = useScheduler()
   scheduler.resetFrameInvalidation()
 

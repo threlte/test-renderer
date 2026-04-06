@@ -1,22 +1,20 @@
 import js from '@eslint/js'
-import globals from 'globals'
-import svelte from 'eslint-plugin-svelte'
 import prettier from 'eslint-config-prettier'
+import perfectionist from 'eslint-plugin-perfectionist'
+import svelte from 'eslint-plugin-svelte'
+import { defineConfig } from 'eslint/config'
+import globals from 'globals'
 import ts from 'typescript-eslint'
-import eslintPluginUnicorn from 'eslint-plugin-unicorn'
+
 import svelteConfig from './svelte.config.js'
 
-export default ts.config(
+export default defineConfig(
   prettier,
   js.configs.recommended,
+  perfectionist.configs['recommended-natural'],
   ...ts.configs.recommended,
   ...svelte.configs.recommended,
   ...svelte.configs.prettier,
-  {
-    plugins: {
-      unicorn: eslintPluginUnicorn,
-    },
-  },
   {
     languageOptions: {
       globals: {
@@ -27,7 +25,17 @@ export default ts.config(
   },
   {
     name: 'ignores',
-    ignores: ['.svelte-kit', 'dist', 'build'],
+    ignores: [
+      '.svelte-kit',
+      'dist',
+      '.DS_Store',
+      'node_modules',
+      'build',
+      'package',
+      '.env',
+      '.env.*',
+      'pnpm-lock.yaml',
+    ],
   },
   {
     files: [
@@ -57,60 +65,34 @@ export default ts.config(
     },
   },
   {
+    name: 'perfectionist',
     rules: {
-      'array-bracket-newline': ['error', 'consistent'],
-      'array-element-newline': 'off',
-      'arrow-body-style': 'off',
-      'max-len': 'off',
-      'quote-props': 'off',
-      camelcase: ['error', { properties: 'never' }],
-      'capitalized-comments': 'off',
-      complexity: 'off',
-      'default-case': 'off',
-      'default-last-param': 'off',
-      'dot-location': ['error', 'property'],
-      'func-names': 'off',
-      'function-call-argument-newline': ['error', 'consistent'],
-      'id-length': 'off',
-      'init-declarations': 'off',
-      'linebreak-style': ['error', 'unix'],
-      'lines-around-comment': 'off',
-      'lines-between-class-members': 'off',
-      'max-lines': 'off',
-      'max-lines-per-function': 'off',
-      'max-params': 'off',
-      'max-statements': 'off',
-      'multiline-comment-style': 'off',
-      'multiline-ternary': ['error', 'always-multiline'],
-      'no-bitwise': 'off',
-      'no-console': ['error', { allow: ['warn', 'error'] }],
-      'no-continue': 'off',
-      'no-extra-parens': 'off',
-      'no-magic-numbers': 'off',
-      'no-ternary': 'off',
-      'no-undefined': 'off',
-      'no-undef-init': 'off',
-      'object-curly-spacing': ['error', 'always'],
-      'object-property-newline': [
+      'perfectionist/sort-array-includes': 'off',
+      'perfectionist/sort-classes': 'off',
+      'perfectionist/sort-decorators': 'off',
+      'perfectionist/sort-enums': 'off',
+      'perfectionist/sort-export-attributes': 'off',
+      'perfectionist/sort-exports': 'off',
+      'perfectionist/sort-heritage-clauses': 'off',
+      'perfectionist/sort-interfaces': 'off',
+      'perfectionist/sort-intersection-types': 'off',
+      'perfectionist/sort-jsx-props': 'off',
+      'perfectionist/sort-maps': 'off',
+      'perfectionist/sort-modules': 'off',
+      'perfectionist/sort-named-exports': 'off',
+      'perfectionist/sort-object-types': 'off',
+      'perfectionist/sort-objects': 'off',
+      'perfectionist/sort-sets': 'off',
+      'perfectionist/sort-switch-case': 'off',
+      'perfectionist/sort-union-types': 'off',
+      'perfectionist/sort-variable-declarations': 'off',
+
+      'perfectionist/sort-imports': [
         'error',
-        { allowAllPropertiesOnSameLine: true },
+        {
+          internalPattern: [String.raw`^\$`],
+        },
       ],
-      'one-var': ['error', 'never'],
-      'padded-blocks': ['error', 'never'],
-      'prefer-destructuring': 'off',
-      'sort-keys': 'off',
-      'sort-imports': 'off',
-      quotes: ['error', 'single'],
-      semi: ['error', 'never'],
-
-      'unicorn/no-useless-undefined': 'off',
-      'unicorn/prevent-abbreviations': 'off',
-      'unicorn/no-keyword-prefix': ['error', { checkProperties: false }],
-      'unicorn/no-array-for-each': 'off',
-      'unicorn/no-null': 'off',
-
-      '@typescript-eslint/prefer-for-of': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'off',
     },
   }
 )

@@ -1,7 +1,8 @@
 <script lang="ts">
+  import type { Vector3Tuple } from 'three'
+
   import { T } from '@threlte/core'
   import { interactivity } from '@threlte/extras'
-  import type { Vector3Tuple } from 'three'
 
   const positions: Vector3Tuple[] = $state([[0, 0, -1]])
 

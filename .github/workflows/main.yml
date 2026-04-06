@@ -1,42 +1,41 @@
-name: Main
+name: Release
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
-permissions: write-all
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
 
 jobs:
-  deploy-and-publish:
+  release:
+    name: Release
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          version: 10
-          run_install: false
-
-      - name: Install Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: 'pnpm'
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: Install and Build 🔧
-        run: |
-          pnpm i
-          pnpm build
+      - name: Install pnpm 🔧
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: true
+
+      - name: Build packages 🔧
+        run: pnpm run package
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
-          # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish: pnpm run release
+          publish: pnpm release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}

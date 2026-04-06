@@ -1,8 +1,8 @@
 import { BoxGeometry, type Mesh, MeshStandardMaterial } from 'three'
 import { describe, expect, it, vi } from 'vitest'
 
-import Subject from '../Scene.svelte'
 import { render } from '../../lib'
+import Subject from '../Scene.svelte'
 
 describe('Scene', () => {
   it('creates an ambient and directional light', () => {

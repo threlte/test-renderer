@@ -1,5 +1,6 @@
 <script lang="ts">
   import { useTask, useThrelte } from '@threlte/core'
+  import { untrack } from 'svelte'
 
   interface Props {
     autoStart: boolean
@@ -11,7 +12,10 @@
 
   const { invalidate } = useThrelte()
 
-  useTask(() => {}, { autoStart, autoInvalidate })
+  useTask(() => {}, {
+    running: () => autoStart,
+    autoInvalidate: untrack(() => autoInvalidate),
+  })
 
   $effect.pre(() => {
     if (prop1) {

@@ -1,23 +1,26 @@
 import { describe, expect, it } from 'vitest'
 
-import Subject from '../Invalidate.svelte'
 import { render } from '../../lib'
+import Subject from '../Invalidate.svelte'
 
 describe('<Invalidate>', () => {
   it('does not invalidate on a frozen useTask', () => {
-    const { context, advance } = render(Subject, {
+    const { advance } = render(Subject, {
       props: {
         autoStart: false,
         autoInvalidate: false,
       },
     })
 
+    // First advance drains setup invalidation
     advance()
-    expect(context.shouldRender()).toBe(false)
+
+    const { frameInvalidated } = advance()
+    expect(frameInvalidated).toBe(false)
   })
 
   it('invalidates on a running useTask', async () => {
-    const { context, advance } = render(Subject, {
+    const { advance } = render(Subject, {
       props: {
         autoStart: true,
         autoInvalidate: true,
@@ -25,11 +28,13 @@ describe('<Invalidate>', () => {
     })
 
     advance()
-    expect(context.shouldRender()).toBe(true)
+
+    const { frameInvalidated } = advance()
+    expect(frameInvalidated).toBe(true)
   })
 
   it('does not invalidate when autoInvalidate is false on a running useTask', () => {
-    const { context, advance } = render(Subject, {
+    const { advance } = render(Subject, {
       props: {
         autoInvalidate: false,
         autoStart: true,
@@ -37,19 +42,27 @@ describe('<Invalidate>', () => {
     })
 
     advance()
-    expect(context.shouldRender()).toBe(false)
+
+    const { frameInvalidated } = advance()
+    expect(frameInvalidated).toBe(false)
   })
 
   it('invalidates on an invalidate() call', async () => {
-    const { context, advance } = render(Subject, {
+    const { advance, rerender } = render(Subject, {
       props: {
         autoInvalidate: false,
         autoStart: false,
-        prop1: 10,
       },
     })
 
     advance()
-    expect(context.shouldRender()).toBe(true)
+
+    const first = advance()
+    expect(first.frameInvalidated).toBe(false)
+
+    await rerender({ prop1: 10 })
+
+    const second = advance()
+    expect(second.frameInvalidated).toBe(true)
   })
 })
