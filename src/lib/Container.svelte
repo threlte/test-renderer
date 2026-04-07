@@ -33,13 +33,13 @@
   /** @type {import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>} */
   export const context = createThrelteContext(() => ({
     renderMode: 'on-demand',
-    autoRender: false,
+    autoRender: true,
     ...contextOptions,
     canvas,
     dom: container,
   }))
   export const scheduler = useScheduler()
-  scheduler.resetFrameInvalidation()
+  scheduler.frameInvalidated.current = false
 
   export const advance = mockAdvanceFn()
   export const interactivityContext = interactivity()
