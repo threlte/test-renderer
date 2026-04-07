@@ -10,7 +10,7 @@
  * @returns {[Props, (nextProps: Partial<Props>) => void]}
  */
 const createProps = (initialProps = {}) => {
-  let currentProps = $state.raw(initialProps)
+  let currentProps = $state(initialProps)
 
   const props = new Proxy(/** @type {Props} */ (initialProps), {
     get(_, key) {
@@ -30,7 +30,9 @@ const createProps = (initialProps = {}) => {
 
   /** @param {Partial<Props>} nextProps */
   const update = (nextProps) => {
-    currentProps = { ...currentProps, ...nextProps }
+    for (const key in nextProps) {
+      currentProps[key] = nextProps[key]
+    }
   }
 
   return [props, update]
