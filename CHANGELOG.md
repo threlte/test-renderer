@@ -1,5 +1,11 @@
 # @threlte/test
 
+## 2.0.1
+
+### Patch Changes
+
+- 88d0a21: Set "autoRender" to true
+
 ## 2.0.0
 
 ### Major Changes
