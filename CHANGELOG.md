@@ -1,5 +1,11 @@
 # @threlte/test
 
+## 2.0.2
+
+### Patch Changes
+
+- d5ba463: Use granular state updates on rerender
+
 ## 2.0.1
 
 ### Patch Changes
