@@ -4,5 +4,6 @@
   "typescript.preferences.importModuleSpecifier": "relative",
   "[svelte]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "deno.enable": false
 }
