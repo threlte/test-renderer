@@ -1,4 +1,5 @@
 import * as Svelte from 'svelte'
+import * as THREE from 'three'
 
 import { cleanup } from './cleanup.js'
 import Container from './Container.svelte'
@@ -107,4 +108,31 @@ const act = async (fn) => {
   return Svelte.tick()
 }
 
-export { act, cleanup, render }
+/**
+ * Get the canvas position of a mesh by name.
+ *
+ * @param {string} name
+ * @param {THREE.Scene} scene
+ * @param {HTMLCanvasElement} canvas
+ * @param {THREE.Camera} camera
+ * @returns {{ x: number; y: number } | undefined}
+ */
+function getMeshCanvasPositionByName(name, scene, canvas, camera) {
+  const mesh = scene.children.find((child) => child.name === name)
+  if (!mesh) return undefined
+
+  const vector = new THREE.Vector3()
+  mesh.getWorldPosition(vector)
+  vector.project(camera);
+
+  const rect = canvas.getBoundingClientRect()
+  const viewportX = rect.left + ((vector.x + 1) / 2) * rect.width
+  const viewportY = rect.top + ((-vector.y + 1) / 2) * rect.height
+
+  return {
+    x: viewportX - rect.left,
+    y: viewportY - rect.top,
+  }
+}
+
+export { act, cleanup, getMeshCanvasPositionByName, render }

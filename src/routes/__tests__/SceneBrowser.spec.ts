@@ -1,29 +1,41 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render } from '../../lib'
-import { getMeshCanvasPositionByName } from '../../lib/browser'
+import { render, getMeshCanvasPositionByName } from '../../lib'
 import Subject from '../Scene.svelte'
 import { userEvent } from 'vitest/browser'
 
 describe('SceneBrowser', () => {
-  it('renders a scene browser', async () => {
+  it('calls the onclick callback when the box mesh is clicked', async () => {
     const onclick = vi.fn()
-    const { scene, container } = render(Subject, { props: { onclick } })
+    const { scene, container, camera, advance, rerender } = render(Subject, { props: { onclick } })
+    advance()
 
     const canvas = container.querySelector('canvas')
     expect(canvas).not.toBeNull()
     if (!canvas) return
 
 
-    const position = getMeshCanvasPositionByName('box-1', scene, canvas)
-    expect(position).not.toBeNull()
-    if (!position) return
-    expect(position.x).toBeDefined()
-    expect(position.y).toBeDefined()
+    const rerenderAndClickBox = async (x: number) => {
+      await rerender({ x })
+      const nextPosition = getMeshCanvasPositionByName('box-1', scene, canvas, camera.current)
+      expect(nextPosition).not.toBeNull()
+      if (!nextPosition) return
+      expect(nextPosition.x).toBeDefined()
+      expect(nextPosition.y).toBeDefined()
 
-    await userEvent.click(canvas, {
-			position: position
-		})
+      await userEvent.click(canvas, {
+        position: nextPosition
+      })
+    }
 
+    await rerenderAndClickBox(0.0)
     expect(onclick).toHaveBeenCalledOnce()
+
+    onclick.mockClear()
+    await rerenderAndClickBox(0.6)
+    expect(onclick).toHaveBeenCalledOnce()
+    
+    onclick.mockClear()
+    await rerenderAndClickBox(3)
+    expect(onclick).not.toHaveBeenCalled()
   })
 })
