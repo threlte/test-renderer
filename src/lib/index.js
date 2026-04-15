@@ -16,4 +16,4 @@ if (typeof window !== 'undefined') {
   console.warn = warn
 }
 
-export { act, cleanup, render } from './pure'
+export { act, cleanup, getMeshCanvasPositionByName, render } from './pure'
