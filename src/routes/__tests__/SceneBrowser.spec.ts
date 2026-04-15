@@ -35,7 +35,7 @@ describe('SceneBrowser', () => {
     expect(onclick).toHaveBeenCalledOnce()
     
     onclick.mockClear()
-    await rerenderAndClickBox(3)
+    await rerenderAndClickBox(3) // this one is out of the camera frustrum so 
     expect(onclick).not.toHaveBeenCalled()
   })
 })
