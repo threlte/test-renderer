@@ -12,9 +12,6 @@ describe('<Invalidate>', () => {
       },
     })
 
-    // First advance drains setup invalidation
-    advance()
-
     const { frameInvalidated } = advance()
     expect(frameInvalidated).toBe(false)
   })
@@ -26,8 +23,6 @@ describe('<Invalidate>', () => {
         autoInvalidate: true,
       },
     })
-
-    advance()
 
     const { frameInvalidated } = advance()
     expect(frameInvalidated).toBe(true)
@@ -41,8 +36,6 @@ describe('<Invalidate>', () => {
       },
     })
 
-    advance()
-
     const { frameInvalidated } = advance()
     expect(frameInvalidated).toBe(false)
   })
@@ -54,8 +47,6 @@ describe('<Invalidate>', () => {
         autoStart: false,
       },
     })
-
-    advance()
 
     const first = advance()
     expect(first.frameInvalidated).toBe(false)
