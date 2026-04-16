@@ -36,6 +36,7 @@ const {
   camera, // CurrentWritable<THREE.Camera>
   advance, // ({ count?: number; delta?: number }) => { frameInvalidated: boolean }
   fireEvent, // (object3D: THREE.Object3D, event, payload) => Promise<void>
+  toCanvasPosition, // (input: string | THREE.Object3D) => { x: number, y: number }
   rerender, // (props) => Promise<void>
   unmount, // () => void
 } = render(Component)
@@ -107,6 +108,22 @@ expect(onclick).toHaveBeenCalledOnce()
 ```
 
 Note that if you use the event object, you will have to design a mock payload.
+
+### toCanvasPosition
+
+`toCanvasPosition` projects a 3D object's world position into canvas pixel coordinates. It accepts either an object name string or a `THREE.Object3D` directly, and returns `{ x, y }` in pixels relative to the canvas.
+
+This is primarily useful when you want to simulate a real pointer event at the location of a 3D object:
+
+```ts
+import { userEvent } from 'vitest/browser'
+
+const { container, toCanvasPosition } = render(Scene)
+
+await userEvent.click(container, {
+  position: toCanvasPosition('box-1' /* a Mesh with name='box-1' */),
+})
+```
 
 ### Setup
 
