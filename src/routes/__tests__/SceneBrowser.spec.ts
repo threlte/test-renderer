@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
+import { userEvent } from 'vitest/browser'
+
 import { render } from '../../lib'
 import Subject from '../Scene.svelte'
-import { userEvent } from 'vitest/browser'
 
 describe('SceneBrowser', () => {
   it('calls the onclick callback when the box mesh is clicked', async () => {
