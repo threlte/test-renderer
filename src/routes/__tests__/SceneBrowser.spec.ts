@@ -6,7 +6,7 @@ import { userEvent } from 'vitest/browser'
 describe('SceneBrowser', () => {
   it('calls the onclick callback when the box mesh is clicked', async () => {
     const onclick = vi.fn()
-    const { container, rerender, position } = render(Subject, {
+    const { container, rerender, toCanvasPosition } = render(Subject, {
       props: { onclick },
     })
 
@@ -14,7 +14,7 @@ describe('SceneBrowser', () => {
       await rerender({ x })
 
       await userEvent.click(container, {
-        position: position('box-1'),
+        position: toCanvasPosition('box-1'),
       })
     }
 

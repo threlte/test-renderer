@@ -29,12 +29,12 @@ import { setup } from './setup.js'
  *   advance: (options?: { count?: number; delta?: number }) => ({ frameInvalidated: boolean })
  *   rerender: (props?: Partial<import('./component-types.js').Props<C>>) => Promise<void>
  *   unmount: () => void
- *   position: (input: string | THREE.Object3D) => { x: number, y: number }
+ *   toCanvasPosition: (input: string | THREE.Object3D) => { x: number, y: number }
  * }} RenderResult
  */
 
 /**
- * Get the canvas position of a mesh by name.
+ * Get the canvas position of an Object3D.
  *
  * @param {THREE.Object3D | string} input
  * @param {THREE.Scene} scene
@@ -110,7 +110,7 @@ const render = (Component, options = {}, renderOptions = {}) => {
     camera: component.context.camera,
     component: component.ref,
     container,
-    position: (input) =>
+    toCanvasPosition: (input) =>
       getObject3dCanvasPosition(
         input,
         component.context.scene,
