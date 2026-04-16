@@ -1,5 +1,12 @@
 # @threlte/test
 
+## 2.1.0
+
+### Minor Changes
+
+- 60a6d23: feat: add mesh to canvas pos helper
+- 996b9d6: `render()` now automatically advances the scheduler once with `delta: 0` after mounting
+
 ## 2.0.2
 
 ### Patch Changes
