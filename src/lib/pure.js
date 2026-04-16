@@ -63,7 +63,6 @@ function getObject3dCanvasPosition(input, scene, el, camera) {
     y: viewportY - rect.top,
   }
 
-  console.log(position)
   return position
 }
 
