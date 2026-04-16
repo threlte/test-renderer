@@ -28,8 +28,44 @@ import { setup } from './setup.js'
  *   advance: (options?: { count?: number; delta?: number }) => ({ frameInvalidated: boolean })
  *   rerender: (props?: Partial<import('./component-types.js').Props<C>>) => Promise<void>
  *   unmount: () => void
+ *   position: (input: string | THREE.Object3D) => { x: number, y: number }
  * }} RenderResult
  */
+
+/**
+ * Get the canvas position of a mesh by name.
+ *
+ * @param {THREE.Object3D | string} input
+ * @param {THREE.Scene} scene
+ * @param {HTMLElement} el
+ * @param {THREE.Camera} camera
+ * @returns {{ x: number; y: number }}
+ */
+function getObject3dCanvasPosition(input, scene, el, camera) {
+  const object3D =
+    typeof input === 'string' ? scene.getObjectByName(input) : input
+
+  if (object3D === undefined) {
+    throw new Error(`${input} not found in scene.`)
+  }
+
+  const vector = new THREE.Vector3()
+
+  object3D.getWorldPosition(vector)
+  vector.project(camera)
+
+  const rect = el.getBoundingClientRect()
+  const viewportX = rect.left + ((vector.x + 1) / 2) * rect.width
+  const viewportY = rect.top + ((-vector.y + 1) / 2) * rect.height
+
+  const position = {
+    x: viewportX - rect.left,
+    y: viewportY - rect.top,
+  }
+
+  console.log(position)
+  return position
+}
 
 /**
  * Render a component into the document.
@@ -70,6 +106,13 @@ const render = (Component, options = {}, renderOptions = {}) => {
     camera: component.context.camera,
     component: component.ref,
     container,
+    position: (input) =>
+      getObject3dCanvasPosition(
+        input,
+        component.context.scene,
+        component.context.dom,
+        component.context.camera.current
+      ),
     context: component.context,
     scene: component.context.scene,
     advance: component.advance,
@@ -108,31 +151,4 @@ const act = async (fn) => {
   return Svelte.tick()
 }
 
-/**
- * Get the canvas position of a mesh by name.
- *
- * @param {string} name
- * @param {THREE.Scene} scene
- * @param {HTMLCanvasElement} canvas
- * @param {THREE.Camera} camera
- * @returns {{ x: number; y: number } | undefined}
- */
-function getMeshCanvasPositionByName(name, scene, canvas, camera) {
-  const mesh = scene.children.find((child) => child.name === name)
-  if (!mesh) return undefined
-
-  const vector = new THREE.Vector3()
-  mesh.getWorldPosition(vector)
-  vector.project(camera);
-
-  const rect = canvas.getBoundingClientRect()
-  const viewportX = rect.left + ((vector.x + 1) / 2) * rect.width
-  const viewportY = rect.top + ((-vector.y + 1) / 2) * rect.height
-
-  return {
-    x: viewportX - rect.left,
-    y: viewportY - rect.top,
-  }
-}
-
-export { act, cleanup, getMeshCanvasPositionByName, render }
+export { act, cleanup, render }
