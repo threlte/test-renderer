@@ -20,6 +20,7 @@ import { setup } from './setup.js'
  * @typedef {{
  *   container: HTMLElement
  *   baseElement: HTMLElement
+ *   canvas: HTMLCanvasElement
  *   camera: import('@threlte/core').CurrentWritable<import('three').Camera>
  *   scene: import('three').Scene
  *   context: import('@threlte/core').ThrelteContext<import('three').WebGLRenderer>
@@ -78,6 +79,7 @@ function getObject3dCanvasPosition(input, scene, el, camera) {
  *   baseElement?: HTMLElement
  *   canvas?: HTMLCanvasElement
  *   context?: Record<string, any>
+ *   delta?: number
  * }} renderOptions
  * @returns {RenderResult<C, Q>} The rendered component and bound testing functions.
  */
@@ -98,10 +100,13 @@ const render = (Component, options = {}, renderOptions = {}) => {
     },
   })
 
+  component.advance({ delta: renderOptions.delta ?? 0 })
+
   const handlers = component.interactivityContext.handlers
 
   return {
     baseElement,
+    canvas,
     camera: component.context.camera,
     component: component.ref,
     container,

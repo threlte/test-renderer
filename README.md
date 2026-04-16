@@ -63,29 +63,22 @@ const { frameInvalidated } = advance()
 expect(frameInvalidated).toBe(true)
 ```
 
-#### First advance after render
+#### Initial advance on render
 
-The first `advance()` call after `render()` will always return `{ frameInvalidated: true }`. This is expected — Threlte's internal setup (renderer properties, camera, resize detection) calls `invalidate()` during initialization, just as it does in production on the first animation frame.
+`render()` automatically calls `advance({ delta: 0 })` once before returning. This ensures that scene matrices (`matrixWorld`) are computed for all objects, so positional assertions are immediately valid without requiring a manual `advance()` call first.
 
-When testing invalidation behavior, call `advance()` once to drain the setup invalidation, then use subsequent calls for your assertions:
+There are a few consequences worth knowing:
+
+**The first user `advance()` is the second scheduler tick.** Any `useTask` with `autoStart: true` will have already run once with `delta: 0` by the time `render()` returns. If your task has side effects that should only run from explicit test code, start the task with `autoStart: false` and control it manually.
+
+**The initial `frameInvalidated` signal is consumed internally.** Any `invalidate()` calls that fire during component initialization are cleared before `render()` returns. You do not need to drain a setup frame before testing invalidation logic — assertions on `frameInvalidated` reflect only what happened during your explicit `advance()` call.
+
+**Note:** tasks that compute `1 / delta` will receive `Infinity` on this initial tick and should guard against it.
+
+The initial delta can be overridden via the third argument to `render()`:
 
 ```ts
-const { advance, rerender } = render(MyComponent, {
-  props: { autoInvalidate: false },
-})
-
-// Drain setup invalidation
-advance()
-
-// Now test real invalidation behavior
-const { frameInvalidated } = advance()
-expect(frameInvalidated).toBe(false)
-
-// Trigger invalidation via prop change
-await rerender({ someProp: 'newValue' })
-
-const result = advance()
-expect(result.frameInvalidated).toBe(true)
+render(MyComponent, {}, { delta: 16 })
 ```
 
 ### fireEvent
